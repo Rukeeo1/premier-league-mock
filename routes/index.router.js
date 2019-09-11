@@ -5,3 +5,5 @@ const router = express.Router();
 
 //check the api...
 router.get('/health-check', (req, res) => res.send('OK'));
+
+module.exports = router;
