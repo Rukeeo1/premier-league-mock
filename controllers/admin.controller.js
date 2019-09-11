@@ -40,7 +40,7 @@ exports.login = async (req, res, next) => {
       );
     }
 
-    console.log(await admin.checkPasswordMatch(password));
+      
     if (!(await admin.checkPasswordMatch(password))) {
       return res.json(
         sendResponse(httpStatus['400_MESSAGE'], 'Email or Password is Wrong')

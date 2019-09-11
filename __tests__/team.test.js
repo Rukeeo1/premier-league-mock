@@ -4,7 +4,7 @@ const app = require('../server');
 const User = require('../models/user.model');
 const TeamModel = require('../models/team.model');
 
-//how do i create a user...
+//dummy users...
 let user = {
   name: 'Rukee Ojigbo',
   email: 'rukeeogjigbo@gmail.com',
@@ -35,19 +35,17 @@ let teamTwo = {
   code: 'AFC'
 };
 
-
 beforeEach(async () => {
-   const userSignUp = await request(app)
-   .post('/api/v1/user')
-   .send(user);
- user = userSignUp.body;
+  const userSignUp = await request(app)
+    .post('/api/v1/user')
+    .send(user);
+  user = userSignUp.body;
 
   //create admin and login
   const adminSignUp = await request(app)
     .post('/api/v1/admin')
     .send(admin);
   admin = adminSignUp.body;
-
 });
 
 afterAll(async () => {
@@ -67,8 +65,8 @@ describe('#TEAM', () => {
           password: '123456'
         });
 
-        // console.log(adminLogin.body,'hello')
- 
+
+
       //get token
       const { payload: token } = adminLogin.body;
 
@@ -80,12 +78,36 @@ describe('#TEAM', () => {
         .expect(200);
 
       const { statusCode, message, payload } = addTeam.body;
-      console.log(statusCode,'www')
+     
       expect(statusCode).toBe(200);
       expect(message).toBe('team created');
       expect(payload).toBeDefined();
       expect(payload.name).toMatch(/Manchester United/i);
     });
 
-  })
-})
+    it('Should not allow ordinary users create teams', async () => {
+      //user login...
+      const userLogin = await request(app)
+        .post('/api/v1/auth/login')
+        .send({
+          email: 'rukeeojigbo@gmail.com',
+          password: '123456'
+        });
+
+      //get token
+      const { payload: token } = userLogin.body;
+
+      //create team...
+      const addTeam = await request(app)
+        .post('/api/v1/admin/add-team')
+        .set('Authorization', `Bearer ${token}`)
+        .send(teamOne)
+        .expect(200);
+
+      const { statusCode, message, payload } = addTeam.body;
+      expect(statusCode).toBe( 401);
+      expect(message).toBe("Admin Only")
+      expect(payload).toBeUndefined();
+    });
+  });
+});
