@@ -13,3 +13,18 @@ exports.viewAllTeams = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getTeam = async (req, res, next) => {
+  try {
+    const team = await TeamModel.findById(req.params.id);
+    
+    if(!team) {
+      return res.json(sendResponse(httpStatus.BAD_REQUEST,'The team not found' ))
+    }
+
+  return   res.json(sendResponse(httpStatus.OK,team))
+  
+  } catch (error) {
+   next(error) 
+  }
+}

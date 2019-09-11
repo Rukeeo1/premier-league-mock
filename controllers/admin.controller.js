@@ -85,8 +85,7 @@ exports.updateTeam = async (req, res, next) => {
     const { id } = req.params;
 
     let team = await TeamModel.findById(id);
-    console.log(team,'hello rukee')
-
+   
     if (!team) {
       return res.sendResponse(httpStatus[400], "Team Doesn't exits");
     }
