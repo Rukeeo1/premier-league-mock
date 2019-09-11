@@ -22,8 +22,24 @@ exports.signUp = async (req, res, next) => {
 }
 
 
-
 exports.login = async (req, res, next) => {
-  res.json('Testing Login route')
-}
+  try {
+    const { email, password } = req.body
+    const user = await User.findOne({ email })
 
+    if (!user) {
+      return res.json(sendResponse(httpStatus.BAD_REQUEST, 'Email or Password is Wrong'))
+    }
+
+    if (!await user.checkPasswordMatch(password)) {
+      return res.json(sendResponse(httpStatus.BAD_REQUEST, 'Email or Password is Wrong'))
+    }
+ 
+   const userdetailsAterLoging = await user.transform()
+
+   res.json(sendResponse(httpStatus[200],userdetailsAterLoging,user.token()))
+
+  } catch (error) {
+    next(error)
+  }
+}
