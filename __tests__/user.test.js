@@ -61,4 +61,20 @@ describe('#USER: test for user route', () => {
         });
     });
   });
+  describe('#SIGN-UP', () => {
+    it('should allow the user signup', async () => {
+      const response = await request(app)
+        .post('/api/v1/user')
+        .send(userFour)
+        .expect(200);
+      expect(response.body.payload).toMatchObject({
+        _id: expect.any(String),
+        name: expect.any(String),
+        email: expect.any(String),
+        isAdmin: expect.any(Boolean)
+      });
+    });
+
+    
+  });
 });
