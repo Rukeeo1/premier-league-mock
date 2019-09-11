@@ -10,8 +10,14 @@ const app = express();
 const morgan = require('morgan');
 const routes = require('./routes/index.router')
 
+//check node environment and choose connection...
+let db_url =
+  process.env.NODE_ENV === 'test'
+    ? process.env.MONGO_HOST_TEST
+    : process.env.MONGO_HOST;
+
 mongoose
-  .connect('mongodb://localhost/sterling-test-backend', {
+  .connect(db_url,  {
     useNewUrlParser: true,
     useCreateIndex: true
   })
@@ -30,9 +36,15 @@ app.use(morgan('combined'));
 //index routes...
 app.use('/api/v1', routes);
 
-const port = process.env.PORT ||6060;
+let port = process.env.PORT ||6060;
 
 
-app.listen(port, () => {
-  console.log('Server running on Port ' + port);
-});
+
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log('Server running on Port ' + 6060);
+  });
+}
+
+
+module.exports = app
