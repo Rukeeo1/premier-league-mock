@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.get('/search', teamCtrl.search)
 
+router.use(verifyToken) 
+
 router.get('/',teamCtrl.viewAllTeams);
 
 
