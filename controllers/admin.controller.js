@@ -75,8 +75,7 @@ exports.addTeam = async (req, res, next) => {
 };
 
 exports.updateTeam = async (req, res, next) => {
-  console.log(req.params,'hrllo')
-  console.log(req.body)
+
   try {
     if (Object.keys(req.body).length === 0)
       return res.json(
