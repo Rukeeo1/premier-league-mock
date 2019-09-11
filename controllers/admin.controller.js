@@ -28,5 +28,29 @@ exports.createAdmin = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  res.json('hello testing admin login')
+  try {
+    const { email, password } = req.body;
+    const admin = await User.findOne({ email });
+
+    if (!admin) {
+      return res.json(
+        sendResponse(httpStatus['400_MESSAGE'], 'Email or Password is Wrong')
+      );
+    }
+
+
+    if (!(await admin.checkPasswordMatch(password))) {
+      return res.json(
+        sendResponse(httpStatus['400_MESSAGE'], 'Email or Password is Wrong')
+      );
+    }
+
+    const adminAfterLogin = await admin.transform();
+
+    return res.json(
+      sendResponse(httpStatus[200], adminAfterLogin, admin.token())
+    );
+  } catch (error) {
+    next(error);
+  }
 };
