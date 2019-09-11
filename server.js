@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
 const morgan = require('morgan');
-
+const routes = require('./routes/index.router')
 
 mongoose
   .connect('mongodb://localhost/sterling-test-backend', {
@@ -23,6 +23,8 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('combined'));
 
+//index routes...
+app.use('/api/v1', routes);
 
 const port = process.env.PORT ||6060;
 
