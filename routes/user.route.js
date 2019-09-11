@@ -6,7 +6,7 @@ const userValidation = require('../validations/user.validation')
 const router = express.Router();
 
 
-// router.route('/').post(validate(userValidation.signUp, { abortEarly: false }), userCtrl.signUp)
+router.route('/').post(validate(userValidation.signUp, { abortEarly: false }),userCtrl.signUp)
 
 
 module.exports = router;
