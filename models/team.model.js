@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const sanitizeQuery = require('../helpers/sanitizeQuery')
+
 const TeamSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -47,6 +49,7 @@ TeamSchema.statics = {
       let teams = []
 
       for (let i = 0, length = listOfQueries.length; i < length; i++) {
+        console.log(listOfQueries)
         if (!listOfQueries[i]) continue;
         const regexValue = new RegExp(listOfQueries[i], 'gi');
         let query = [
@@ -58,7 +61,7 @@ TeamSchema.statics = {
         search = search.concat(query);
       
       }
-      
+
     
       if (search.length) {
         teams = await this.find({
@@ -68,11 +71,9 @@ TeamSchema.statics = {
  
       return teams;
     } catch (error) {
-      next(error)
+     // next(error)
     }
-
-  }
-}
+  }}
 
 const TeamModel = mongoose.model('Team', TeamSchema);
 

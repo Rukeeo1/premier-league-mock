@@ -30,5 +30,16 @@ exports.getTeam = async (req, res, next) => {
 }
 
 exports.search = async (req,res,next) => {
-  res.send('testing search route')
+  try {
+
+    const team = await TeamModel.search(req.query.search);
+
+    if(!team){
+      return res.json(sendResponse(httpStatus.BAD_REQUEST, 'Team not found'))
+    }
+
+    res.json(sendResponse(httpStatus.OK,'This is the Team',team))
+  } catch (error) {
+    next(error)
+  }
 }
