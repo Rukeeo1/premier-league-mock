@@ -8,4 +8,8 @@ const router = express.Router();
 
 router.get('/',teamCtrl.viewAllTeams);
 
+
+router.get('/:id', teamCtrl.getTeam);
+
+
 module.exports = router
