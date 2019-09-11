@@ -1,6 +1,7 @@
 const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
+const TeamModel = require('../models/team.model');
 
 exports.createAdmin = async (req, res, next) => {
   try {
@@ -56,7 +57,20 @@ exports.login = async (req, res, next) => {
 };
 
 exports.addTeam = async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    const teamExists = await TeamModel.findOne({ name });
+    if (teamExists) {
+      res.json(sendResponse(httpStatus[200], 'Team Already Exits'));
+    }
 
-  res.json('testing admin add team route')
+    const team = new TeamModel(req.body);
+    await team.save();
+
+    return res.json(sendResponse(httpStatus.OK, 'team created', team));
+  } catch (error) {
+    next(error);
+  }
+  
 };
 
