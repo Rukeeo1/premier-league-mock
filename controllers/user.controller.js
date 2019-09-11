@@ -21,3 +21,9 @@ exports.signUp = async (req, res, next) => {
   }
 }
 
+
+
+exports.login = async (req, res, next) => {
+  res.json('Testing Login route')
+}
+
