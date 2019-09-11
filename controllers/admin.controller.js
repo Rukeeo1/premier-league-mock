@@ -54,3 +54,9 @@ exports.login = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.addTeam = async (req, res, next) => {
+
+  res.json('testing admin add team route')
+};
+
