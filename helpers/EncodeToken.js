@@ -11,6 +11,7 @@ const EncodeToken = (email, id, isAdmin) => {
     email,
     isAdmin
   };
+  console.log(payload,'we')
   return jwt.encode(payload,  process.env.JWT_SECRET);
 };
 

@@ -27,6 +27,17 @@ const TeamSchema = new mongoose.Schema({
   }
 })
 
+TeamSchema.methods = {
+  async update(obj) {
+    for (key in obj) {
+      this[key] = obj[key];
+    }
+    await this.save();
+    return this;
+  }
+}
+
+
 const TeamModel = mongoose.model('Team', TeamSchema);
 
 module.exports = TeamModel;
