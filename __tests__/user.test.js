@@ -75,6 +75,23 @@ describe('#USER: test for user route', () => {
       });
     });
 
+    it('#EMAILS: Should not allow duplicate emails',
+      async () => {
+        const response = await request(app)
+          .post('/api/v1/user')
+          .send({
+            name: 'Rukee Ojigbo',
+            email: 'rukeeojigbo@gmail.com',
+            password: '22222222',
+            favoriteTeam: 'Manchester United'
+          })
+          .expect(200);
+        const { statusCode, message, errors } = response.body;
+        expect(statusCode).toBe(400);
+        expect(message).toMatch("Bad Request");
+        expect(errors).toBeDefined;
+      });
+
     
   });
 });
