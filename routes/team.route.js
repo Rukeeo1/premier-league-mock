@@ -6,10 +6,13 @@ const verifyToken = require('../helpers/verifyToken')
 
 const router = express.Router();
 
+router.get('/search', teamCtrl.search)
+
 router.get('/',teamCtrl.viewAllTeams);
 
 
 router.get('/:id', teamCtrl.getTeam);
+
 
 
 module.exports = router
