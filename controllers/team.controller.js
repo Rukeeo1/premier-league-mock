@@ -28,3 +28,7 @@ exports.getTeam = async (req, res, next) => {
    next(error) 
   }
 }
+
+exports.search = async (req,res,next) => {
+  res.send('testing search route')
+}
