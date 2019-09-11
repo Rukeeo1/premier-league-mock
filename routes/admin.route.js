@@ -22,4 +22,8 @@ router.use(verifyAdmin)
 router.route('/add-team').post(validate(teamValidation.addTeam, { abortEarly: false }), adminCtrl.addTeam)
 
 
+/** api/v1/admin/edit-team/:id */
+router.route('/edit-team/:id').put(validate(teamValidation.updateTeam, { abortEarly: false }), adminCtrl.updateTeam)
+
+
 module.exports =  router;
