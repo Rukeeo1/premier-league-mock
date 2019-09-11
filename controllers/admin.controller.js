@@ -17,7 +17,7 @@ exports.createAdmin = async (req, res, next) => {
 
     const admin = new User(req.body);
     admin.isAdmin = true
-    // console.log(admin,'from controller')
+   
     await admin.save();
 
     res.json(sendResponse(httpStatus.OK, 'Admin created', admin));
@@ -25,4 +25,8 @@ exports.createAdmin = async (req, res, next) => {
     console.log(error.message);
     next(error);
   }
+};
+
+exports.login = async (req, res, next) => {
+  res.json('hello testing admin login')
 };
