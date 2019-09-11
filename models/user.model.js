@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const EncodeToken = require('../helpers/EncodeToken');
 /**
  * user schema
  */
@@ -44,6 +45,31 @@ UserSchema.pre('save', function (next) {
   });
 })
 
+UserSchema.methods = {
+  /**
+   * checks if inputed password is similar to the one on the user object.
+   * @param {string} password - input
+   */
+  async checkPasswordMatch(password) {
+    return await bcrypt.compare(password, this.password)
+  },
+
+  token() {
+    return EncodeToken(this.email, this._id, this.isAdmin, this.favoriteTeam, this.location)
+
+  },
+
+  transform() {
+    const userInfoAferLogin = {
+      email: this.email,
+      favoriteTeam: this.favoriteTeam,
+      location: this.location,
+      name: this.name
+    }
+    return (userInfoAferLogin)
+  }
+
+}
 const UserModel = mongoose.model('User', UserSchema);
 
 
