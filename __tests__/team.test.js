@@ -160,6 +160,30 @@ describe('#TEAM', () => {
           code: expect.any(String)
         });
     });
+
+    it('shouldnot allow an empty requesst body', async () => {
+      //login admin and get token:
+      const adminLogin = await request(app)
+        .post('/api/v1/auth/admin-login')
+        .send({
+          email: 'admin@gmail.com',
+          password: '123456'
+        });
+
+      const { payload: token } = adminLogin.body;
+
+      const editedTeam = await request(app)
+        .put(`/api/v1/admin/edit-team/${teamToEditId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ })
+        .expect(200);
+
+      const { statusCode, message, payload } = editedTeam.body;
+
+      expect(statusCode).toBe(400),
+        expect(message).toBe('Request body cant be empty')
+      
+    });
   });
 
   describe('#View Teams', () => {
