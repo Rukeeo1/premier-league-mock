@@ -44,6 +44,7 @@ let fixtureId;
 afterAll(async () => {
   await User.deleteMany().exec();
   await TeamModel.deleteMany().exec();
+  await Fixture.deleteMany().exec()
 });
 beforeAll(async () => {
   await TeamModel.deleteMany().exec();
@@ -229,7 +230,6 @@ describe('#FIXTURES routes', () => {
       const deletedFixture = await request(app)
         .delete(`/api/v1/admin/remove-fixture/${fixtureId}`)
         .set('Authorization', `Bearer ${adminToken}`);
-        console.log(deletedFixture.body,'hello rukee')
         const { statusCode, message, payload } =deletedFixture.body;
         expect(statusCode).toBe(200);
         expect(message).toBe('Successfully deleted');
@@ -237,4 +237,39 @@ describe('#FIXTURES routes', () => {
     });
     
   });
+
+
+  describe('#Pending', () => {
+    it('A user should be able to get pending fixtures', async () => {
+      const pendingFixture = await request(app)
+        .get(`/api/v1/fixtures/pending`)
+        .set('Authorization', `Bearer ${adminToken}`);
+        const { statusCode, message, payload } = pendingFixture.body;
+        expect(statusCode).toBe(200);
+        expect(message[0]).toMatchObject({
+          date: expect.any(String),
+          time: expect.any(String),
+          homeTeam: expect.any(String),
+          awayTeam: expect.any(String),
+          status: expect.any(String),
+          goalsHomeTeam: expect.any(String),
+          goalsAwayTeam: expect.any(String)
+        });
+       
+    });
+  });
+
+
+  // describe('#Completed', () => {
+  //   it('A user should be able to get pending fixtures', async () => {
+  //     const pendingFixture = await request(app)
+  //       .get(`/api/v1/fixtures/completed`)
+  //       .set('Authorization', `Bearer ${adminToken}`);
+  //       const { statusCode, message, payload } = pendingFixture.body;
+  //       expect(statusCode).toBe(200);
+  //       expect(message).toBe();
+  //       expect(payload).toBeDefined();
+  //       console.log(pendingFixture.body,'hhhhhh')
+  //   });
+  // });
 });
