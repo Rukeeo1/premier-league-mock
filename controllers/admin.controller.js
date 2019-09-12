@@ -30,7 +30,7 @@ exports.createAdmin = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    console.log(req.body, 'we');
+    
     const { email, password } = req.body;
     const admin = await User.findOne({ email });
 

@@ -20,6 +20,7 @@ exports.addFixture = async (req, res, next) => {
 
     await fixture.save();
 
+  
     return res.json(
       sendResponse(httpStatus.OK, 'fixture successfully create', fixture)
     );
