@@ -39,6 +39,7 @@ let teamOneId;
 let teamTwoId;
 let adminToken;
 let userToken;
+let fixtureId;
 
 afterAll(async () => {
   await User.deleteMany().exec();
@@ -92,17 +93,20 @@ beforeAll(async () => {
   teamTwo = addTeamTwo.body;
   teamTwoId = addTeamTwo.body.payload._id;
 
-  //create fixture
-  let fixture = {
-    date: '29-11-2012',
-    time: ' 11:48PM',
-    status: 'Pending',
-    venue: 'Old Trafford',
-    homeTeam: teamOneId,
-    awayTeam: teamTwoId,
-    homeTeamName: 'Manchester United',
-    awayTeamName: 'Arsenal Football Club'
-  };
+  const addFixture = await request(app)
+    .post('/api/v1/admin/fixtures')
+    .set('Authorization', `Bearer ${adminToken}`)
+    .send({
+      date: '29-11-2012',
+      time: ' 11:48PM',
+      status: 'Pending',
+      venue: 'Old Trafford',
+      homeTeam: teamTwoId,
+      awayTeam: teamOneId,
+      homeTeamName: 'Manchester United',
+      awayTeamName: 'Arsenal Football Club'
+    })
+  fixtureId = addFixture.body.payload._id
 });
 
 describe('#FIXTURES routes', () => {
@@ -164,13 +168,36 @@ describe('#FIXTURES routes', () => {
           date: '12:15pm'
         })
         .expect(200);
-      console.log(userLogin.body, 'helllo ');
-      const {statusCode, message} = userLogin.body
-      // console.log(userLogin,'rukee ')
-      // const { statusCode, message, payload } = response.body;
+      const { statusCode, message } = userLogin.body;
       expect(statusCode).toBe(401);
       expect(message).toMatch(/Admin Only/i);
     });
+  });
 
+  describe('#Edit', () => {
+    it('An admin should be able to edit fixture details', async() => {
+      const editedFixture = await request(app)
+        .put(`/api/v1/admin/edit-fixture/${fixtureId}`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          "goalsAwayTeam": "2",
+          "goalsHomeTeam": "3",
+          "status": "Pending"
+        })
+        .expect(200);
+     
+        const { statusCode, message, payload} = editedFixture.body
+        expect(statusCode).toBe(200);
+        expect(message).toBe('Team details updated successfully');
+        expect(payload).toMatchObject({
+          date: expect.any(String),
+          time: expect.any(String),
+          homeTeam: expect.any(String),
+          awayTeam: expect.any(String),
+          status: expect.any(String),
+          goalsHomeTeam: expect.any(String), 
+          goalsAwayTeam: expect.any(String)
+        });
+    })
   });
 });
