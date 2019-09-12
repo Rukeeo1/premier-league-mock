@@ -38,6 +38,7 @@ router.route('/fixtures').post(validate(fixtureValidation.createFixture, { abort
 
  /** /api/v1/admin/remove-fixture/ */
  router.route('/remove-fixture/:id').delete(fixtureCtrl.removeFixture)
+ 
   
 
 module.exports =  router;
