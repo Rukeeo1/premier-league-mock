@@ -260,16 +260,14 @@ describe('#FIXTURES routes', () => {
   });
 
 
-  // describe('#Completed', () => {
-  //   it('A user should be able to get pending fixtures', async () => {
-  //     const pendingFixture = await request(app)
-  //       .get(`/api/v1/fixtures/completed`)
-  //       .set('Authorization', `Bearer ${adminToken}`);
-  //       const { statusCode, message, payload } = pendingFixture.body;
-  //       expect(statusCode).toBe(200);
-  //       expect(message).toBe();
-  //       expect(payload).toBeDefined();
-  //       console.log(pendingFixture.body,'hhhhhh')
-  //   });
-  // });
+  describe('#Completed', () => {
+    it('A user should be able to get completed fixtures', async () => {
+      const pendingFixture = await request(app)
+        .get(`/api/v1/fixtures/completed`)
+        .set('Authorization', `Bearer ${adminToken}`);
+        const { statusCode, message, payload } = pendingFixture.body;
+        expect(statusCode).toBe(200);
+        expect(message).toEqual([]);
+    });
+  });
 });
