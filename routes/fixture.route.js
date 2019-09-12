@@ -8,4 +8,7 @@ const router = express.Router();
 
 router.route('/').get(fixtureCtrl.getFixtures)
 
+/** /api/v1/fixtures/pending */
+router.route('/pending').get(fixtureCtrl.getPendingFixtures)
+
 module.exports = router
