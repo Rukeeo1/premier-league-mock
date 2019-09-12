@@ -43,3 +43,11 @@ exports.search = async (req,res,next) => {
     next(error)
   }
 }
+
+exports.removeTeam = async (req, res, next) => {
+  try {
+   res.send('testing remove ctrl')
+  } catch (error) {
+    next(error)
+  }
+}
