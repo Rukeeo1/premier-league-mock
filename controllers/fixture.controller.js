@@ -79,6 +79,23 @@ exports.search = async (req, res, next) => {
 
 
 exports.updateFixture = async (req, res, next) => {
-  res.send("testing update fixture route")
+  try {
+    const { id } = req.params;
+
+    let fixture = await Fixture.findById(id);
+   console.log(fixture,'hello')
+    if (!fixture) {
+      return res.sendResponse(httpStatus[400], "Fixture doesn't exists")
+    }
+
+    fixture = await fixture.update(req.body)
+console.log(fixture,'after update')
+    fixture.save();
+
+    return res.json(sendResponse(httpStatus.OK, 'Team details update successfully', fixture));
+
+  } catch (error) {
+    next(error)
+  }
 }
 

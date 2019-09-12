@@ -18,5 +18,21 @@ module.exports = {
       fullTimeScores: Joi.string(),
       result: Joi.string()
     }
+  },
+  //update Fixture details
+  updateFixture: {
+    body: {
+      date: Joi.string(),
+      time: Joi.string(),
+      status: Joi.string(),
+      refree: Joi.string(),
+      venue: Joi.string(),
+      homeTeam: Joi.string(),
+      awayTeam: Joi.string(),
+      goalsHomeTeam: Joi.string(),
+      goalsAwayTeam: Joi.string(),
+      fullTimeScores: Joi.string(),
+      result: Joi.string()
+    }
   }
 };
