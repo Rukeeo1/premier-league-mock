@@ -37,11 +37,12 @@ let teamTwo = {
 
 let teamOneId;
 let teamTwoId;
+let adminToken;
+let userToken;
 
 afterAll(async () => {
   await User.deleteMany().exec();
   await TeamModel.deleteMany().exec();
-  // mongoose.connection.close();
 });
 beforeAll(async () => {
   await TeamModel.deleteMany().exec();
@@ -51,14 +52,19 @@ beforeAll(async () => {
     .send(user);
   user = userSignUp.body;
 
+  let userLogin = await request(app)
+    .post('/api/v1/auth/login')
+    .send({
+      email: 'rukeeojigbo@gmail.com',
+      password: '123456'
+    });
+  userToken = userLogin.body.payload;
 
   //admin signup...
   const adminSignUp = await request(app)
     .post('/api/v1/admin')
     .send(admin);
   admin = adminSignUp.body;
-
-  console.log(admin, 'hello  admin')
 
   //login admin and get token:
   const adminLogin = await request(app)
@@ -67,14 +73,12 @@ beforeAll(async () => {
       email: 'admin@gmail.com',
       password: '123456'
     });
-
-  //extract token...
-  const { payload: token } = adminLogin.body;
+  adminToken = adminLogin.body.payload;
 
   //create add team
   const addTeam = await request(app)
     .post('/api/v1/admin/add-team')
-    .set('Authorization', `Bearer ${token}`)
+    .set('Authorization', `Bearer ${adminToken}`)
     .send(teamOne);
 
   teamOne = addTeam.body;
@@ -83,12 +87,10 @@ beforeAll(async () => {
   //create add team
   const addTeamTwo = await request(app)
     .post('/api/v1/admin/add-team')
-    .set('Authorization', `Bearer ${token}`)
+    .set('Authorization', `Bearer ${adminToken}`)
     .send(teamTwo);
-  //  console.log(teamId.body,'hello rukee')
   teamTwo = addTeamTwo.body;
   teamTwoId = addTeamTwo.body.payload._id;
-
 
   //create fixture
   let fixture = {
@@ -101,31 +103,21 @@ beforeAll(async () => {
     homeTeamName: 'Manchester United',
     awayTeamName: 'Arsenal Football Club'
   };
-
-  const createFixture = await request(app)
-    .post('/api/v1/admin/fixtures')
-    .set('auth-token', token)
-    .send(fixture)
-    .expect(200);
 });
-
-
 
 describe('#FIXTURES routes', () => {
   describe('#Adding Fixtures', () => {
     it('Should allow an admin create teams', async () => {
-      let fixture =
-      {
-        "time": "12:30PM",
-        "venue": "Old Trafford",
-        "homeTeam": teamOneId,
-        "awayTeam": teamTwoId,
-        "awayTeamName": 'Manchester United',
-        "homeTeamName": 'Arsenal Football Club',
-        "date": "12:15pm"
-      }
-      console.log(teamOneId, 'hee')
-      //login admin and get token:
+      let fixture = {
+        time: '12:30PM',
+        venue: 'Old Trafford',
+        homeTeam: teamOneId,
+        awayTeam: teamTwoId,
+        awayTeamName: 'Manchester United',
+        homeTeamName: 'Arsenal Football Club',
+        date: '12:15pm'
+      };
+
       const adminLogin = await request(app)
         .post('/api/v1/auth/admin-login')
         .send({
@@ -135,17 +127,16 @@ describe('#FIXTURES routes', () => {
 
       //extract token...
       const { payload: token } = adminLogin.body;
-      // console.log(token,'hello rukee tokne')
 
       const addFixture = await request(app)
         .post('/api/v1/admin/fixtures')
         .set('Authorization', `Bearer ${token}`)
-        .send(fixture).expect(200)
+        .send(fixture)
+        .expect(200);
 
-      console.log(addFixture.body, 'this si body')
       const { message, statusCode, payload } = addFixture.body;
-      expect(addFixture.statusCode).toBe(200)
-      expect(message).toBe("fixture successfully create")
+      expect(statusCode).toBe(200);
+      expect(message).toBe('fixture successfully created');
       expect(payload).toBeDefined();
 
       expect(payload).toMatchObject({
@@ -157,10 +148,29 @@ describe('#FIXTURES routes', () => {
         goalsHomeTeam: expect.any(String),
         goalsAwayTeam: expect.any(String)
       });
+    });
 
+    it("Regular users can't add fixtures", async () => {
+      const userLogin = await request(app)
+        .post('/api/v1/admin/fixtures')
+        .set('Authorization', `Bearer ${userToken}`)
+        .send({
+          time: '12:30PM',
+          venue: 'Old Trafford',
+          homeTeam: teamOneId,
+          awayTeam: teamTwoId,
+          awayTeamName: 'Manchester United',
+          homeTeamName: 'Arsenal Football Club',
+          date: '12:15pm'
+        })
+        .expect(200);
+      console.log(userLogin.body, 'helllo ');
+      const {statusCode, message} = userLogin.body
+      // console.log(userLogin,'rukee ')
+      // const { statusCode, message, payload } = response.body;
+      expect(statusCode).toBe(401);
+      expect(message).toMatch(/Admin Only/i);
+    });
 
-      // console.log(addFixture,'ruke is a good')
-
-    })
-  })
-})
+  });
+});

@@ -7,7 +7,7 @@ const teamValidation = require('../validations/team.validation');
 const fixtureValidation = require('../validations/fixture.validation');
 const fixtureCtrl = require('../controllers/fixture.controller')
 const verifyToken = require('../helpers/verifyToken')
-const  verifyAdmin = require('../middlewares/verifyAdmin.middleware')
+const verifyAdmin = require('../middlewares/verifyAdmin.middleware')
 
 
 
@@ -36,9 +36,8 @@ router.route('/edit-fixture/:id').put(fixtureCtrl.updateFixture)
 /** /api/v1/admin/fixtures */
 router.route('/fixtures').post(validate(fixtureValidation.createFixture, { abortEarly: false }), fixtureCtrl.addFixture)
 
- /** /api/v1/admin/remove-fixture/ */
- router.route('/remove-fixture/:id').delete(fixtureCtrl.removeFixture)
- 
-  
+/** /api/v1/admin/remove-fixture/ */
+router.route('/remove-fixture/:id').delete(fixtureCtrl.removeFixture)
 
-module.exports =  router;
+
+module.exports = router;
