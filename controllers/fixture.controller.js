@@ -77,3 +77,8 @@ exports.search = async (req, res, next) => {
   }
 };
 
+
+exports.updateFixture = async (req, res, next) => {
+  res.send("testing update fixture route")
+}
+
