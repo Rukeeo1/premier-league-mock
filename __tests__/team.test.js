@@ -72,7 +72,7 @@ beforeEach(async () => {
 afterAll(async () => {
   await User.deleteMany().exec();
   await TeamModel.deleteMany().exec();
-  mongoose.connection.close();
+  // mongoose.connection.close();
 });
 
 describe('#TEAM', () => {
