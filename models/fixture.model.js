@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const sanitizeQuery = require('../helpers/sanitizeQuery')
 
 const FixtureSchema = new mongoose.Schema({
   date: {
@@ -36,7 +37,14 @@ const FixtureSchema = new mongoose.Schema({
     required: true,
     index: true
   },
- 
+  awayTeamName:{
+    type: String,
+    index:true
+  },
+  goalsHomeTeam: {
+    type: String,
+    default: '0'
+  },
   goalsHomeTeam: {
     type: String,
     default: '0'
@@ -55,6 +63,42 @@ const FixtureSchema = new mongoose.Schema({
     }
   }
 })
+
+FixtureSchema.statics = {
+
+  async search(searchTerm) {
+
+    try {
+      let listOfQueries = sanitizeQuery(searchTerm)
+
+      let search = []
+      let fixtures = []
+      for (let i = 0, length = listOfQueries.length; i < length; i++) {
+        if (!listOfQueries[i]) continue;
+        const regexValue = new RegExp(listOfQueries[i], 'gi');
+        let query = [
+          { homeTeamName: { $regex: regexValue } },
+          { awayTeamName: { $regex: regexValue } },
+          { status: { $regex: regexValue } },
+          {venue : {$regex: regexValue}}
+        ];
+        search = search.concat(query);
+      }
+
+      if (search.length) {
+        fixtures = await this.find({
+          $or: search
+        });
+      }
+      return fixtures;
+    } catch (error) {
+      next(error)
+    }
+  }
+}
+
+
+
 
 const FixtureModel = mongoose.model('Fixture', FixtureSchema);
 
