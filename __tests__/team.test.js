@@ -188,4 +188,41 @@ describe('#TEAM', () => {
       expect(message).toMatch(/You are not authorized/i);
     });
   });
+
+  describe('#Delete Team', () => {
+    it('The Admin should be able to delete a team', async () => {
+      const adminLogin = await request(app)
+        .post('/api/v1/auth/admin-login')
+        .send({
+          email: 'admin@gmail.com',
+          password: '123456'
+        });
+
+      //get token
+      const { payload: token } = adminLogin.body;
+      const response = await request(app)
+        .delete(`/api/v1/admin/remove-team/${teamToEditId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .expect(200);
+
+      const { statusCode, message, payload, error } = response.body;
+      expect(statusCode).toBe(200);
+      expect(message).toMatch('Team sucessfully removed');
+      expect(payload).toBeDefined();
+      // expect(payload).toBeFalsy();
+    }),
+      describe('#Search Team', () => {
+        it('A user should be able to search for a team', async () => {
+          const response = await request(app)
+            .get(`/api/v1/teams/search?search=ar`)
+            .expect(200);
+
+          console.log(response.body);
+          const { statusCode, message, payload, error } = response.body;
+          expect(statusCode).toBe(200);
+          expect(message).toMatch('This is the Team');
+          expect(payload).toBeDefined();
+        });
+      });
+  });
 });
