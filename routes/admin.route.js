@@ -4,10 +4,10 @@ const adminCtrl = require('../controllers/admin.controller');
 const teamCtrl = require('../controllers/team.controller');
 const userValidation = require('../validations/user.validation');
 const teamValidation = require('../validations/team.validation');
+const fixtureValidation = require('../validations/fixture.validation');
+const fixtureCtrl = require('../controllers/fixture.controller')
 const verifyToken = require('../helpers/verifyToken')
 const  verifyAdmin = require('../middlewares/verifyAdmin.middleware')
-
-
 
 
 
@@ -19,6 +19,7 @@ router.use(verifyToken)
 
 router.use(verifyAdmin)
 //create team route...
+
 /** api/v1/admin/add-team */
 router.route('/add-team').post(validate(teamValidation.addTeam, { abortEarly: false }), adminCtrl.addTeam)
 
@@ -30,5 +31,8 @@ router.route('/edit-team/:id').put(validate(teamValidation.updateTeam, { abortEa
 /** api/v1/admin/remove-team/:id */
 router.route('/remove-team/:id').delete(teamCtrl.removeTeam)
 
+
+/** /api/v1/admin/fixtures */
+router.route('/fixtures').post(validate(fixtureValidation.createFixture, { abortEarly: false }), fixtureCtrl.addFixture)
 
 module.exports =  router;
