@@ -63,3 +63,17 @@ exports.getCompletedFixtures = async (req, res, next) => {
   }
 }
 
+exports.search = async (req, res, next) => {
+  try {
+    const fixture = await Fixture.search(req.query.search)
+
+    if (!fixture) {
+      return res.json(sendResponse(httpStatus.OK, 'Fixture not found'));
+    }
+
+    res.json(sendResponse(httpStatus.OK, fixture))
+  } catch (error) {
+    next(error);
+  }
+};
+
