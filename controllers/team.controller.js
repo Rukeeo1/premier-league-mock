@@ -45,9 +45,13 @@ exports.search = async (req,res,next) => {
 }
 
 exports.removeTeam = async (req, res, next) => {
-  try {
-   res.send('testing remove ctrl')
-  } catch (error) {
-    next(error)
+  
+    try {
+      const { id } = req.params;
+      let team = await TeamModel.findByIdAndRemove(id);
+      res.json(sendResponse(httpStatus.OK, 'Team sucessfully removed', team))
+    } catch (error) {
+      next(error)
+    
   }
 }
