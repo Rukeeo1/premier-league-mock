@@ -161,4 +161,31 @@ describe('#TEAM', () => {
         });
     });
   });
+
+  describe('#View Teams', () => {
+    it('A login user should be able to view all teams', async () => {
+      const loginUser = await request(app)
+        .post('/api/v1/auth/login')
+        .send({
+          email: 'rukeeogjigbo@gmail.com',
+          password: '123456'
+        });
+
+      const { payload: token } = loginUser.body;
+      const getTEams = await request(app)
+        .get('/api/v1/teams')
+        .set('Authorization', `Bearer ${token}`)
+        const { statusCode, message, payload } = getTEams.body;
+        expect(statusCode).toBe(200);
+        expect(message).toBe('These are a list of all the teams');
+        expect(payload).toBeDefined();
+    });
+
+    it("shouldn't allow a user who isn't logged in view all teams", async () => {
+      const getTEams = await request(app).get('/api/v1/teams');
+      const { statusCode, message } = getTEams.body;
+      expect(statusCode).toBe(401);
+      expect(message).toMatch(/You are not authorized/i);
+    });
+  });
 });
