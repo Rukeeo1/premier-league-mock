@@ -42,3 +42,8 @@ exports.getFixtures = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getPendingFixtures = async (req, res, next) => {
+res.json('testing get pending fixtures')
+}
+
