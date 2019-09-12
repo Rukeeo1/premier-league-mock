@@ -14,4 +14,6 @@ router.route('/pending').get(fixtureCtrl.getPendingFixtures)
 /** api/v1/fixtures/completed*/
 router.route('/completed').get(fixtureCtrl.getCompletedFixtures)
 
+router.route('/search').post(fixtureCtrl.search)
+
 module.exports = router
