@@ -105,8 +105,8 @@ beforeAll(async () => {
       awayTeam: teamOneId,
       homeTeamName: 'Manchester United',
       awayTeamName: 'Arsenal Football Club'
-    })
-  fixtureId = addFixture.body.payload._id
+    });
+  fixtureId = addFixture.body.payload._id;
 });
 
 describe('#FIXTURES routes', () => {
@@ -175,29 +175,66 @@ describe('#FIXTURES routes', () => {
   });
 
   describe('#Edit', () => {
-    it('An admin should be able to edit fixture details', async() => {
+    it('An admin should be able to edit fixture details', async () => {
       const editedFixture = await request(app)
         .put(`/api/v1/admin/edit-fixture/${fixtureId}`)
         .set('Authorization', `Bearer ${adminToken}`)
         .send({
-          "goalsAwayTeam": "2",
-          "goalsHomeTeam": "3",
-          "status": "Pending"
+          goalsAwayTeam: '2',
+          goalsHomeTeam: '3',
+          status: 'Pending'
         })
         .expect(200);
-     
-        const { statusCode, message, payload} = editedFixture.body
-        expect(statusCode).toBe(200);
-        expect(message).toBe('Team details updated successfully');
-        expect(payload).toMatchObject({
-          date: expect.any(String),
-          time: expect.any(String),
-          homeTeam: expect.any(String),
-          awayTeam: expect.any(String),
-          status: expect.any(String),
-          goalsHomeTeam: expect.any(String), 
-          goalsAwayTeam: expect.any(String)
+
+      const { statusCode, message, payload } = editedFixture.body;
+      expect(statusCode).toBe(200);
+      expect(message).toBe('Team details updated successfully');
+      expect(payload).toMatchObject({
+        date: expect.any(String),
+        time: expect.any(String),
+        homeTeam: expect.any(String),
+        awayTeam: expect.any(String),
+        status: expect.any(String),
+        goalsHomeTeam: expect.any(String),
+        goalsAwayTeam: expect.any(String)
+      });
+    });
+
+    it('Should return an error code when the fixture is not found', async () => {
+      const editedFixture = await request(app)
+        .put(`/api/v1/admin/edit-fixture/5d7856dd4d2618a1292c2ff7`)
+        .set('Authorization', `Bearer ${adminToken}`)
+        .send({
+          goalsAwayTeam: '2',
+          goalsHomeTeam: '3',
+          status: 'Pending'
         });
-    })
+
+      // console.log(editedFixture.body,'check this to see')
+    });
+  });
+
+  //  refactor search method for teams
+  describe('#Search', () => {
+    it('User should be able to search for fixture', async () => {
+      const searchResult = await request(app).get(
+        `/api/v1/fixtures/search?search=Ar`
+      );
+      // console.log(searchResult.body,'rukee what')
+    });
+  });
+
+  describe('#Delete', () => {
+    it('An admin should be able to delete a fixture', async () => {
+      const deletedFixture = await request(app)
+        .delete(`/api/v1/admin/remove-fixture/${fixtureId}`)
+        .set('Authorization', `Bearer ${adminToken}`);
+        console.log(deletedFixture.body,'hello rukee')
+        const { statusCode, message, payload } =deletedFixture.body;
+        expect(statusCode).toBe(200);
+        expect(message).toBe('Successfully deleted');
+        expect(payload).toBeDefined();
+    });
+    
   });
 });
