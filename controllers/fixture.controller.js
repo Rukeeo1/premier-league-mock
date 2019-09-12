@@ -7,7 +7,6 @@ exports.addFixture = async (req, res, next) => {
   try {
     const { homeTeam, awayTeam, venue } = req.body;
 
-
     //if hometeam, awayteam, and venue already exist...break..
     const fixtureExist = await Fixture.find({ homeTeam, awayTeam, venue });
 
@@ -30,11 +29,16 @@ exports.addFixture = async (req, res, next) => {
 };
 
 exports.removeFixture = async (req, res, next) => {
-res.json('testing remove fixtures')
-}
-
+  res.json('testing remove fixtures');
+};
 
 exports.getFixtures = async (req, res, next) => {
- res.json('testing get fixtures ')
-}
-
+  try {
+    const fixtures = await Fixture.find();
+    res.json(
+      sendResponse(httpStatus.OK, 'These are all fixtures', fixtures)
+    );
+  } catch (error) {
+    next(error);
+  }
+};
