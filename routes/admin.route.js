@@ -27,18 +27,17 @@ router.route('/add-team').post(validate(teamValidation.addTeam, { abortEarly: fa
 /** api/v1/admin/edit-team/:id */
 router.route('/edit-team/:id').put(validate(teamValidation.updateTeam, { abortEarly: false }), adminCtrl.updateTeam)
 
-
 /** api/v1/admin/remove-team/:id */
 router.route('/remove-team/:id').delete(teamCtrl.removeTeam)
 
+/** /api/v1/admin/edit-fixture/:id */
+router.route('/edit-fixture/:id').put(fixtureCtrl.updateFixture)
 
 /** /api/v1/admin/fixtures */
 router.route('/fixtures').post(validate(fixtureValidation.createFixture, { abortEarly: false }), fixtureCtrl.addFixture)
 
  /** /api/v1/admin/remove-fixture/ */
  router.route('/remove-fixture/:id').delete(fixtureCtrl.removeFixture)
-
-  /** /api/v1/admin/edit-fixture/:id */
-  router.route('/edit-fixture/:id').put(fixtureCtrl.updateFixture)
+  
 
 module.exports =  router;
