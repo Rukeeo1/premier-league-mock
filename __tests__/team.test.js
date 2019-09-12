@@ -35,7 +35,10 @@ let teamTwo = {
   code: 'AFC'
 };
 
+let teamToEditId;
 beforeEach(async () => {
+  await TeamModel.deleteMany().exec();
+
   const userSignUp = await request(app)
     .post('/api/v1/user')
     .send(user);
@@ -46,6 +49,24 @@ beforeEach(async () => {
     .post('/api/v1/admin')
     .send(admin);
   admin = adminSignUp.body;
+
+  const adminLogin = await request(app)
+    .post('/api/v1/auth/admin-login')
+    .send({
+      email: 'admin@gmail.com',
+      password: '123456'
+    });
+
+  //extract token...
+  const { payload: token } = adminLogin.body;
+
+  //create add team
+  const addTeam = await request(app)
+    .post('/api/v1/admin/add-team')
+    .set('Authorization', `Bearer ${token}`)
+    .send(teamTwo);
+
+  teamToEditId = addTeam.body.payload._id;
 });
 
 afterAll(async () => {
@@ -65,8 +86,6 @@ describe('#TEAM', () => {
           password: '123456'
         });
 
-
-
       //get token
       const { payload: token } = adminLogin.body;
 
@@ -78,7 +97,7 @@ describe('#TEAM', () => {
         .expect(200);
 
       const { statusCode, message, payload } = addTeam.body;
-     
+
       expect(statusCode).toBe(200);
       expect(message).toBe('team created');
       expect(payload).toBeDefined();
@@ -90,7 +109,7 @@ describe('#TEAM', () => {
       const userLogin = await request(app)
         .post('/api/v1/auth/login')
         .send({
-          email: 'rukeeojigbo@gmail.com',
+          email: 'rukeeogjigbo@gmail.com',
           password: '123456'
         });
 
@@ -105,9 +124,41 @@ describe('#TEAM', () => {
         .expect(200);
 
       const { statusCode, message, payload } = addTeam.body;
-      expect(statusCode).toBe( 401);
-      expect(message).toBe("Admin Only")
+      expect(statusCode).toBe(401);
+      expect(message).toBe('Admin Only');
       expect(payload).toBeUndefined();
+    });
+  });
+
+  describe('#Edit Teams', () => {
+    it('An admin should be able to edit a team', async () => {
+      //login admin and get token:
+      const adminLogin = await request(app)
+        .post('/api/v1/auth/admin-login')
+        .send({
+          email: 'admin@gmail.com',
+          password: '123456'
+        });
+
+      const { payload: token } = adminLogin.body;
+
+      const editedTeam = await request(app)
+        .put(`/api/v1/admin/edit-team/${teamToEditId}`)
+        .set('Authorization', `Bearer ${token}`)
+        .send({ name: 'rukee football club' })
+        .expect(200);
+
+      const { statusCode, message, payload } = editedTeam.body;
+
+      expect(statusCode).toBe(200),
+        expect(message).toBe('Team details update successfully'),
+        expect(payload).toMatchObject({
+          name: expect.any(String),
+          address: expect.any(String),
+          city: expect.any(String),
+          founded: expect.any(String),
+          code: expect.any(String)
+        });
     });
   });
 });
