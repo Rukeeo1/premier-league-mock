@@ -44,6 +44,12 @@ exports.getFixtures = async (req, res, next) => {
 };
 
 exports.getPendingFixtures = async (req, res, next) => {
-res.json('testing get pending fixtures')
+  try {
+    const pendingFixtures = await Fixture.find({ status: "Pending" });
+
+    res.json(sendResponse(httpStatus.OK, pendingFixtures))
+  } catch (error) {
+    next(error)
+  }
 }
 
