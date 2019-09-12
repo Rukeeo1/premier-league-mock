@@ -37,6 +37,25 @@ app.use(morgan('combined'));
 //index routes...
 app.use('/api/v1', routes);
 
+app.use((err, req, res, next) => {
+  let message = err;
+ 
+  if (err.joi) {
+    message = customErrorMessage(err.joi.details);
+  }
+  next(message);
+}); //error converter
+
+//error handler
+app.use((err, req, res, next) => {
+  res.send(err);
+});
+
+//for urls that aren't found...
+app.use((req, res) => {
+  res.send('Not found');
+});
+
 let port = process.env.PORT ||6060;
 
 
