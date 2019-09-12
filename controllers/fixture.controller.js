@@ -29,7 +29,16 @@ exports.addFixture = async (req, res, next) => {
 };
 
 exports.removeFixture = async (req, res, next) => {
-  res.json('testing remove fixtures');
+  try {
+    const { id } = req.params
+
+    const fixture = await Fixture.findByIdAndRemove(id);
+
+    return res.json(sendResponse(httpStatus.OK, 'Successfully deleted', fixture));
+
+  } catch (error) {
+    next(error)
+  }
 };
 
 exports.getFixtures = async (req, res, next) => {
