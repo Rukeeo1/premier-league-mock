@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const sanitizeQuery = require('../helpers/sanitizeQuery')
+const sanitizeQuery = require('../helpers/sanitizeQuery');
 
 const FixtureSchema = new mongoose.Schema({
   date: {
@@ -27,19 +27,19 @@ const FixtureSchema = new mongoose.Schema({
   },
   homeTeam: {
     type: mongoose.Types.ObjectId,
-    ref: "Team",
+    ref: 'Team',
     required: true,
     index: true
   },
   awayTeam: {
     type: mongoose.Types.ObjectId,
-    ref: "Team",
+    ref: 'Team',
     required: true,
     index: true
   },
-  awayTeamName:{
+  awayTeamName: {
     type: String,
-    index:true
+    index: true
   },
   goalsHomeTeam: {
     type: String,
@@ -58,21 +58,32 @@ const FixtureSchema = new mongoose.Schema({
   },
   result: {
     type: String,
-    get: (v) => {
-      return this.status === 'Pending' ? ' - ' : `${this.goalsAwayTeam} - ${this.goalsHomeTeam}`;
+    get: v => {
+      return this.status === 'Pending'
+        ? ' - '
+        : `${this.goalsAwayTeam} - ${this.goalsHomeTeam}`;
     }
   }
-})
+});
+
+FixtureSchema.methods = {
+  async update(obj) {
+    for (key in obj) {
+      this[key] = obj[key];
+    }
+    await this.save();
+    return this;
+  }
+}
 
 FixtureSchema.statics = {
-
+ 
   async search(searchTerm) {
-
     try {
-      let listOfQueries = sanitizeQuery(searchTerm)
+      let listOfQueries = sanitizeQuery(searchTerm);
 
-      let search = []
-      let fixtures = []
+      let search = [];
+      let fixtures = [];
       for (let i = 0, length = listOfQueries.length; i < length; i++) {
         if (!listOfQueries[i]) continue;
         const regexValue = new RegExp(listOfQueries[i], 'gi');
@@ -80,7 +91,7 @@ FixtureSchema.statics = {
           { homeTeamName: { $regex: regexValue } },
           { awayTeamName: { $regex: regexValue } },
           { status: { $regex: regexValue } },
-          {venue : {$regex: regexValue}}
+          { venue: { $regex: regexValue } }
         ];
         search = search.concat(query);
       }
@@ -92,15 +103,11 @@ FixtureSchema.statics = {
       }
       return fixtures;
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
-}
-
-
-
+};
 
 const FixtureModel = mongoose.model('Fixture', FixtureSchema);
 
-
-module.exports = FixtureModel 
+module.exports = FixtureModel;
