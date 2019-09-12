@@ -53,3 +53,7 @@ exports.getPendingFixtures = async (req, res, next) => {
   }
 }
 
+exports.getCompletedFixtures = async (req, res, next) => {
+res.json('testing get completed fixtures')
+}
+
