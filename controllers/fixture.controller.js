@@ -4,10 +4,8 @@ const sendResponse = require('../helpers/response');
 const Fixture = require('../models/fixture.model');
 const client = require('../redis/redis');
 
-
 exports.addFixture = async (req, res, next) => {
   try {
-  
     const { homeTeam, awayTeam, venue } = req.body;
 
     //if hometeam, awayteam, and venue already exist...break..
@@ -27,7 +25,6 @@ exports.addFixture = async (req, res, next) => {
       sendResponse(httpStatus.OK, 'fixture successfully created', fixture)
     );
   } catch (error) {
-    console.log(error.message);
     next(error);
   }
 };
@@ -48,21 +45,25 @@ exports.removeFixture = async (req, res, next) => {
 
 exports.getFixtures = async (req, res, next) => {
   try {
-    const fixtureReadisKey = 'fixtureRedis';//set key
-//check client for fixtures...
-    return client.get(fixtureReadisKey, async(err, fixtures) => {
-      if(fixtures){
-        return res.json(sendResponse(
-          httpStatus.OK,
-          'These are a list of all the fixtures',
-          JSON.parse(fixtures)
-        ))
-      }else{
+    const fixtureReadisKey = 'fixtureRedis'; //set key
+    //check client for fixtures...
+    return client.get(fixtureReadisKey, async (err, fixtures) => {
+      if (fixtures) {
+        return res.json(
+          sendResponse(
+            httpStatus.OK,
+            'These are a list of all the fixtures',
+            JSON.parse(fixtures)
+          )
+        );
+      } else {
         const fixtures = await Fixture.find();
         client.setex(fixtureReadisKey, 360, JSON.stringify(fixtures));
-        res.json(sendResponse(httpStatus.OK, 'These are all fixtures', fixtures));
+        res.json(
+          sendResponse(httpStatus.OK, 'These are all fixtures', fixtures)
+        );
       }
-    })
+    });
   } catch (error) {
     next(error);
   }
@@ -70,11 +71,25 @@ exports.getFixtures = async (req, res, next) => {
 
 exports.getPendingFixtures = async (req, res, next) => {
   try {
-    //check client for pending fixtures
-   // return client.get()
-    const pendingFixtures = await Fixture.find({ status: 'Pending' });
+    //check client for pending fixtures...
+    const pendingFixturesRedis = 'pendingRedisKey';
 
-    res.json(sendResponse(httpStatus.OK, pendingFixtures));
+    return client.get(pendingFixturesRedis, async (err, pendingFixtures) => {
+      if (pendingFixtures) {
+        return res.json(
+          sendResponse(httpStatus.OK, JSON.parse(pendingFixtures))
+        );
+      } else {
+        //pedning fixtures
+        const pendingFixtures = await Fixture.find({ status: 'Pending' });
+        client.setex(
+          pendingFixturesRedis,
+          360,
+          JSON.stringify(pendingFixtures)
+        );
+        res.json(sendResponse(httpStatus.OK, pendingFixtures));
+      }
+    });
   } catch (error) {
     next(error);
   }
@@ -82,9 +97,17 @@ exports.getPendingFixtures = async (req, res, next) => {
 
 exports.getCompletedFixtures = async (req, res, next) => {
   try {
-    const pendingFixtures = await Fixture.find({ status: 'Completed' });
-
-    res.json(sendResponse(httpStatus.OK, pendingFixtures));
+    const completedFixturesKey = 'completedFixturesKey';
+    return client.get(completedFixturesKey, async (err, completedFixtures) => {
+      if (completedFixtures) {
+        return res.json(
+          sendResponse(httpStatus.OK, JSON.parse(completedFixtures))
+        );
+      } else {
+        const completedFixtures = await Fixture.find({ status: 'Completed' });
+        res.json(sendResponse(httpStatus.OK, completedFixtures));
+      }
+    });
   } catch (error) {
     next(error);
   }

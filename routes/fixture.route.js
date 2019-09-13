@@ -12,7 +12,6 @@ router.use(verifyToken)
 
 router.route('/').get(fixtureCtrl.getFixtures)
 
-
 /** /api/v1/fixtures/pending */
 router.route('/pending').get(fixtureCtrl.getPendingFixtures)
 
