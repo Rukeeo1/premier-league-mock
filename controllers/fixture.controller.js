@@ -2,9 +2,12 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const Fixture = require('../models/fixture.model');
+const client = require('../redis/redis');
+
 
 exports.addFixture = async (req, res, next) => {
   try {
+  
     const { homeTeam, awayTeam, venue } = req.body;
 
     //if hometeam, awayteam, and venue already exist...break..
@@ -45,8 +48,23 @@ exports.removeFixture = async (req, res, next) => {
 
 exports.getFixtures = async (req, res, next) => {
   try {
-    const fixtures = await Fixture.find();
-    res.json(sendResponse(httpStatus.OK, 'These are all fixtures', fixtures));
+    const fixtureReadisKey = 'fixtureRedis';//set key
+//check client for fixtures...
+    return client.get(fixtures, async(err, fixtures) => {
+      if(fixtures){
+        return res.json(sendResponse(
+          httpStatus.OK,
+          'These are a list of all the fixtures',
+          JSON.parse(fixtures)
+        ))
+      }else{
+        const fixtures = await Fixture.find();
+        client.setex(fixtureReadisKey, 360, JSON.stringify(fixtures));
+        res.json(sendResponse(httpStatus.OK, 'These are all fixtures', fixtures));
+      }
+    })
+    
+
   } catch (error) {
     next(error);
   }
