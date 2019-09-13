@@ -105,6 +105,21 @@ FixtureSchema.statics = {
     } catch (error) {
       next(error);
     }
+  },
+  async get(id) {
+    try {
+      return await this.findById(id)
+        .populate({
+          path: "homeTeam",
+          select: "name address city"
+        }).populate({
+          path: "awayTeam",
+          select: "name address city"
+        }).exec()
+    } catch (error) {
+      next(error)
+    }
+
   }
 };
 

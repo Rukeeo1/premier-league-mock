@@ -22,9 +22,10 @@ exports.addFixture = async (req, res, next) => {
 
   
     return res.json(
-      sendResponse(httpStatus.OK, 'fixture successfully create', fixture)
+      sendResponse(httpStatus.OK, 'fixture successfully created', fixture)
     );
   } catch (error) {
+    console.log(error.message)
     next(error);
   }
 };
@@ -75,11 +76,13 @@ exports.getCompletedFixtures = async (req, res, next) => {
 
 exports.search = async (req, res, next) => {
   try {
+    console.log(req.params,'from controller')
     const fixture = await Fixture.search(req.query.search)
-
+console.log(fixture,'hleeee')
     if (!fixture) {
       return res.json(sendResponse(httpStatus.OK, 'Fixture not found'));
     }
+console.log(fixture);
 
     res.json(sendResponse(httpStatus.OK, fixture))
   } catch (error) {
@@ -93,7 +96,7 @@ exports.updateFixture = async (req, res, next) => {
     const { id } = req.params;
 
     let fixture = await Fixture.findById(id);
- 
+
     if (!fixture) {
       return res.sendResponse(httpStatus[400], "Fixture doesn't exists")
     }
@@ -102,7 +105,7 @@ exports.updateFixture = async (req, res, next) => {
 
     fixture.save();
 
-    return res.json(sendResponse(httpStatus.OK, 'Team details update successfully', fixture));
+    return res.json(sendResponse(httpStatus.OK, 'Team details updated successfully', fixture));
 
   } catch (error) {
     next(error)

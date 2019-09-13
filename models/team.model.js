@@ -49,7 +49,6 @@ TeamSchema.statics = {
       let teams = []
 
       for (let i = 0, length = listOfQueries.length; i < length; i++) {
-        console.log(listOfQueries)
         if (!listOfQueries[i]) continue;
         const regexValue = new RegExp(listOfQueries[i], 'gi');
         let query = [
