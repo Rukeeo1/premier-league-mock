@@ -196,6 +196,25 @@ describe('#FIXTURES routes', () => {
     });
   });
 
+  //  refactor search method for teams
+  describe('#Search', () => {
+    it('User should be able to search for fixture', async () => {
+      const searchResult = await request(app).get(
+        '/api/v1/fixtures/search?search=man'
+      );
+      const { statusCode, message } = searchResult.body;
+      expect(statusCode).toBe(200);
+      expect(message[0]).toMatchObject({
+        date: expect.any(String),
+        time: expect.any(String),
+        homeTeam: expect.any(String),
+        awayTeam: expect.any(String),
+        status: expect.any(String),
+        goalsHomeTeam: expect.any(String),
+        goalsAwayTeam: expect.any(String)
+      });
+    });
+  });
 
   describe('#Get A Single Fixture by ID', () => {
     it('should allow a user get a fixture by id', async () => {
