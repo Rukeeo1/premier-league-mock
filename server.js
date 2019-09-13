@@ -8,11 +8,11 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-const client = redis.createClient(6379);//created redis client
-// echo redis errors to the console
-client.on('error', (err) => {//logged redis error to the console...
-  console.log("Error " + err)
-});
+// const client = redis.createClient(6379,'localhost');//created redis client
+// // echo redis errors to the console
+// client.on('error', (err) => {//logged redis error to the console...
+//   console.log("Error " + err)
+// });
 
 const morgan = require('morgan');
 const routes = require('./routes/index.router')
@@ -64,7 +64,7 @@ app.use((req, res) => {
 });
 
 let port = process.env.PORT ||6060;
-
+// console.log(client,'this is cl')
 
 
 if (process.env.NODE_ENV !== 'test') {
@@ -76,6 +76,6 @@ if (process.env.NODE_ENV !== 'test') {
 // exports.client = client;//export redis client...
 // module.exports = app
 module.exports = {
-  app: app,
-  redisClient: client
+  app: app
+  // client: client
 }

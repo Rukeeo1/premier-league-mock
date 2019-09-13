@@ -1,9 +1,10 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('../server');
+const { app }= require('../server');
 const User = require('../models/user.model');
 const TeamModel = require('../models/team.model');
 const Fixture = require('../models/fixture.model');
+
 
 let user = {
   name: 'Rukee Ojigbo',
