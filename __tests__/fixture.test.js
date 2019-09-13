@@ -44,7 +44,7 @@ let fixtureId;
 afterAll(async () => {
   await User.deleteMany().exec();
   await TeamModel.deleteMany().exec();
-  await Fixture.deleteMany().exec()
+  await Fixture.deleteMany().exec();
 });
 beforeAll(async () => {
   await TeamModel.deleteMany().exec();
@@ -77,7 +77,7 @@ beforeAll(async () => {
     });
   adminToken = adminLogin.body.payload;
 
-  //create add team
+  //Create team
   const addTeam = await request(app)
     .post('/api/v1/admin/add-team')
     .set('Authorization', `Bearer ${adminToken}`)
@@ -86,7 +86,7 @@ beforeAll(async () => {
   teamOne = addTeam.body;
   teamOneId = addTeam.body.payload._id;
 
-  //create add team
+  //create team
   const addTeamTwo = await request(app)
     .post('/api/v1/admin/add-team')
     .set('Authorization', `Bearer ${adminToken}`)
@@ -143,16 +143,6 @@ describe('#FIXTURES routes', () => {
       expect(statusCode).toBe(200);
       expect(message).toBe('fixture successfully created');
       expect(payload).toBeDefined();
-
-      expect(payload).toMatchObject({
-        date: expect.any(String),
-        time: expect.any(String),
-        homeTeam: expect.any(String),
-        awayTeam: expect.any(String),
-        status: expect.any(String),
-        goalsHomeTeam: expect.any(String),
-        goalsAwayTeam: expect.any(String)
-      });
     });
 
     it("Regular users can't add fixtures", async () => {
@@ -190,15 +180,6 @@ describe('#FIXTURES routes', () => {
       const { statusCode, message, payload } = editedFixture.body;
       expect(statusCode).toBe(200);
       expect(message).toBe('Team details updated successfully');
-      expect(payload).toMatchObject({
-        date: expect.any(String),
-        time: expect.any(String),
-        homeTeam: expect.any(String),
-        awayTeam: expect.any(String),
-        status: expect.any(String),
-        goalsHomeTeam: expect.any(String),
-        goalsAwayTeam: expect.any(String)
-      });
     });
 
     it('Should return an error code when the fixture is not found', async () => {
@@ -211,73 +192,72 @@ describe('#FIXTURES routes', () => {
           status: 'Pending'
         });
 
-       console.log(editedFixture.body,'check this to see')
+      console.log(editedFixture.body, 'check this to see');
     });
   });
 
-  //  refactor search method for teams
-  describe('#Search', () => {
-    it('User should be able to search for fixture', async () => {
-      const searchResult = await request(app).get('api/v1/fixtures/search'
-      ).query('search=man');
-       console.log(searchResult,'rukee what')
+
+  describe('#Get A Single Fixture by ID', () => {
+    it('should allow a user get a fixture by id', async () => {
+      const getSingleFixture = await request(app)
+        .get(`/api/v1/fixtures/${fixtureId}`)
+        .set('Authorization', `Bearer ${userToken}`);
+
+      const { message, statusCode, payload } = getSingleFixture.body;
+      expect(statusCode).toBe(200);
+      expect(message).toMatchObject({
+        date: expect.any(String),
+        time: expect.any(String),
+        homeTeam: expect.any(Object),
+        awayTeam: expect.any(Object),
+        status: expect.any(String),
+        goalsHomeTeam: expect.any(String),
+        goalsAwayTeam: expect.any(String)
+      });
     });
   });
+
+  /** get fixtures */
+  describe('#Pending fixtures', () => {
+    it('A user should be able to get pending fixtures', async () => {
+      const pendingFixture = await request(app)
+        .get(`/api/v1/fixtures/pending`)
+        .set('Authorization', `Bearer ${adminToken}`);
+      const { statusCode, message, payload } = pendingFixture.body;
+      expect(statusCode).toBe(200);
+      expect(message[0]).toMatchObject({
+        date: expect.any(String),
+        time: expect.any(String),
+        homeTeam: expect.any(String),
+        awayTeam: expect.any(String),
+        status: expect.any(String),
+        goalsHomeTeam: expect.any(String),
+        goalsAwayTeam: expect.any(String)
+      });
+    });
+  });
+
+  describe('#Completed completed fixtures', () => {
+    it('A user should be able to get completed fixtures', async () => {
+      const completedFixture = await request(app)
+        .get(`/api/v1/fixtures/completed`)
+        .set('Authorization', `Bearer ${adminToken}`);
+      const { statusCode, message, payload } = completedFixture.body;
+      expect(statusCode).toBe(200);
+      expect(message).toEqual([]);
+    });
+  });
+
 
   describe('#Delete', () => {
     it('An admin should be able to delete a fixture', async () => {
       const deletedFixture = await request(app)
         .delete(`/api/v1/admin/remove-fixture/${fixtureId}`)
         .set('Authorization', `Bearer ${adminToken}`);
-        const { statusCode, message, payload } =deletedFixture.body;
-        expect(statusCode).toBe(200);
-        expect(message).toBe('Successfully deleted');
-        expect(payload).toBeDefined();
-    });
-    
-  });
-
-
-  describe('#Pending', () => {
-    it('A user should be able to get pending fixtures', async () => {
-      const pendingFixture = await request(app)
-        .get(`/api/v1/fixtures/pending`)
-        .set('Authorization', `Bearer ${adminToken}`);
-        const { statusCode, message, payload } = pendingFixture.body;
-        expect(statusCode).toBe(200);
-        expect(message[0]).toMatchObject({
-          date: expect.any(String),
-          time: expect.any(String),
-          homeTeam: expect.any(String),
-          awayTeam: expect.any(String),
-          status: expect.any(String),
-          goalsHomeTeam: expect.any(String),
-          goalsAwayTeam: expect.any(String)
-        });
-       
-    });
-  });
-
-
-  describe('#Completed', () => {
-    it('A user should be able to get completed fixtures', async () => {
-      const pendingFixture = await request(app)
-        .get(`/api/v1/fixtures/completed`)
-        .set('Authorization', `Bearer ${adminToken}`);
-        const { statusCode, message, payload } = pendingFixture.body;
-        expect(statusCode).toBe(200);
-        expect(message).toEqual([]);
-    });
-  });
-
-  describe('#Completed', () => {
-    it('A user should be able to get completed fixtures', async () => {
-      const pendingFixture = await request(app)
-        .get(`/api/v1/fixtures/completed`)
-        .set('Authorization', `Bearer ${adminToken}`);
-        const { statusCode, message, payload } = pendingFixture.body;
-        expect(statusCode).toBe(200);
-        expect(message).toEqual([]);
+      const { statusCode, message, payload } = deletedFixture.body;
+      expect(statusCode).toBe(200);
+      expect(message).toBe('Successfully deleted');
+      expect(payload).toBeDefined();
     });
   });
 });
