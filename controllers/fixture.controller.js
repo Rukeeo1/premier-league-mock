@@ -54,6 +54,22 @@ exports.getFixtures = async (req, res, next) => {
   }
 };
 
+exports.getSingleFixture = async (req, res, next) => {
+  try {
+    const { id } = req.params
+
+    const fixture = await Fixture.get(id);
+
+    if (!fixture) {
+      return res.json(sendResponse(httpStatus.BAD_REQUEST, 'Fixture not found'), fixture)
+    }
+
+    res.json(sendResponse(httpStatus.OK, fixture))
+  } catch (error) {
+    next(error)
+  }
+}
+
 exports.getPendingFixtures = async (req, res, next) => {
   try {
     const pendingFixtures = await Fixture.find({ status: "Pending" });
