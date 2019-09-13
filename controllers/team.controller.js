@@ -6,20 +6,20 @@ const client = require('../redis/redis');
 
 exports.viewAllTeams = async (req, res, next) => {
   try {
-    const redisTeamsKeys = 'teamRedis';//redis key..
+    const redisTeamsKeys = 'teamRedis'; //redis key..
     return client.get(redisTeamsKeys, async (err, teams) => {
       //if teams exists in redis cache...return teams
       if (teams) {
         return res.json(
           sendResponse(
             httpStatus.OK,
-            'These are a list of all from redisthe teams',
+            'These are a list of all the teams',
             JSON.parse(teams)
           )
         );
-      } else {//else find teams from the database and first set redis key...
+      } else {
+        //else find teams from the database and first set redis key...
         const teams = await TeamModel.find();
-        client.setex(redisTeamsKeys,360,JSON.stringify(teams))
         //return normal response to client...
         res.json(
           sendResponse(
@@ -37,15 +37,31 @@ exports.viewAllTeams = async (req, res, next) => {
 
 exports.getTeam = async (req, res, next) => {
   try {
-    const team = await TeamModel.findById(req.params.id);
-
-    if (!team) {
-      return res.json(
-        sendResponse(httpStatus.BAD_REQUEST, 'The team not found')
-      );
-    }
-
-    return res.json(sendResponse(httpStatus.OK, team));
+    //create key for redis...
+    const redisTeamKey = 'redisTeam';
+    return client.get(redisTeamKey, async (err, team) => {
+      //if team exists on the client...return
+      if (team) {
+        return res.json(
+          sendResponse(
+            httpStatus.OK,
+            'Team request successful',
+            JSON.parse(team)
+          )
+        );
+      } else {
+        const team = await TeamModel.findById(req.params.id);
+        client.setex(redisTeamKey, 360, JSON.stringify(team));
+        return res.json(
+          sendResponse(httpStatus.OK, 'Team request successful', team)
+        );
+        // if (!team) {
+        //   return res.json(
+        //     sendResponse(httpStatus.BAD_REQUEST, 'The team not found')
+        //   );
+        // }
+      }
+    });
   } catch (error) {
     next(error);
   }
