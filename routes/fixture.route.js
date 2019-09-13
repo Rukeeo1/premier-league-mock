@@ -6,13 +6,12 @@ const verifyToken = require('../helpers/verifyToken')
 
 const router = express.Router();
 
-router.route('/search').post(fixtureCtrl.search)
+router.route('/search').get(fixtureCtrl.search)
 
 router.use(verifyToken)
 
 router.route('/').get(fixtureCtrl.getFixtures)
 
-router.route('/:id').get(fixtureCtrl.getSingleFixture)
 
 /** /api/v1/fixtures/pending */
 router.route('/pending').get(fixtureCtrl.getPendingFixtures)
@@ -20,5 +19,6 @@ router.route('/pending').get(fixtureCtrl.getPendingFixtures)
 /** api/v1/fixtures/completed*/
 router.route('/completed').get(fixtureCtrl.getCompletedFixtures)
 
+router.route('/:id').get(fixtureCtrl.getSingleFixture)
 
 module.exports = router
