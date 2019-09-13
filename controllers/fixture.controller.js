@@ -50,7 +50,7 @@ exports.getFixtures = async (req, res, next) => {
   try {
     const fixtureReadisKey = 'fixtureRedis';//set key
 //check client for fixtures...
-    return client.get(fixtures, async(err, fixtures) => {
+    return client.get(fixtureReadisKey, async(err, fixtures) => {
       if(fixtures){
         return res.json(sendResponse(
           httpStatus.OK,
@@ -63,8 +63,6 @@ exports.getFixtures = async (req, res, next) => {
         res.json(sendResponse(httpStatus.OK, 'These are all fixtures', fixtures));
       }
     })
-    
-
   } catch (error) {
     next(error);
   }
@@ -72,6 +70,8 @@ exports.getFixtures = async (req, res, next) => {
 
 exports.getPendingFixtures = async (req, res, next) => {
   try {
+    //check client for pending fixtures
+   // return client.get()
     const pendingFixtures = await Fixture.find({ status: 'Pending' });
 
     res.json(sendResponse(httpStatus.OK, pendingFixtures));
@@ -92,14 +92,10 @@ exports.getCompletedFixtures = async (req, res, next) => {
 
 exports.search = async (req, res, next) => {
   try {
-    console.log(req.params, 'from controller');
     const fixture = await Fixture.search(req.query.search);
-    console.log(fixture, 'hleeee');
     if (!fixture) {
       return res.json(sendResponse(httpStatus.OK, 'Fixture not found'));
     }
-    
-
     res.json(sendResponse(httpStatus.OK, fixture));
   } catch (error) {
     next(error);
