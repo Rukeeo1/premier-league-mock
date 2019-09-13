@@ -211,17 +211,16 @@ describe('#FIXTURES routes', () => {
           status: 'Pending'
         });
 
-      // console.log(editedFixture.body,'check this to see')
+       console.log(editedFixture.body,'check this to see')
     });
   });
 
   //  refactor search method for teams
   describe('#Search', () => {
     it('User should be able to search for fixture', async () => {
-      const searchResult = await request(app).get(
-        `/api/v1/fixtures/search?search=Ar`
-      );
-      // console.log(searchResult.body,'rukee what')
+      const searchResult = await request(app).get('api/v1/fixtures/search'
+      ).query('search=man');
+       console.log(searchResult,'rukee what')
     });
   });
 
@@ -259,6 +258,17 @@ describe('#FIXTURES routes', () => {
     });
   });
 
+
+  describe('#Completed', () => {
+    it('A user should be able to get completed fixtures', async () => {
+      const pendingFixture = await request(app)
+        .get(`/api/v1/fixtures/completed`)
+        .set('Authorization', `Bearer ${adminToken}`);
+        const { statusCode, message, payload } = pendingFixture.body;
+        expect(statusCode).toBe(200);
+        expect(message).toEqual([]);
+    });
+  });
 
   describe('#Completed', () => {
     it('A user should be able to get completed fixtures', async () => {
