@@ -2,6 +2,9 @@ const httpStatus = require('http-status');
 const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const TeamModel = require('../models/team.model');
+const client  = require('../redis/redis')
+
+
 
 exports.viewAllTeams = async (req, res, next) => {
   try {
