@@ -191,8 +191,6 @@ describe('#FIXTURES routes', () => {
           goalsHomeTeam: '3',
           status: 'Pending'
         });
-
-      console.log(editedFixture.body, 'check this to see');
     });
   });
 
