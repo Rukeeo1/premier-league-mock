@@ -2,11 +2,18 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const redis = require('redis');//required redis
 
 const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
+const client = redis.createClient(6379);//created redis client
+// echo redis errors to the console
+client.on('error', (err) => {//logged redis error to the console...
+  console.log("Error " + err)
+});
+
 const morgan = require('morgan');
 const routes = require('./routes/index.router')
 const { customErrorMessage } = require('./helpers/errorHandlerJoi');
@@ -66,5 +73,9 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-
-module.exports = app
+// exports.client = client;//export redis client...
+// module.exports = app
+module.exports = {
+  app: app,
+  redisClient: client
+}
