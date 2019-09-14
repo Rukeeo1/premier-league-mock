@@ -29,19 +29,6 @@ exports.addFixture = async (req, res, next) => {
   }
 };
 
-exports.removeFixture = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    const fixture = await Fixture.findByIdAndRemove(id);
-
-    return res.json(
-      sendResponse(httpStatus.OK, 'Successfully deleted', fixture)
-    );
-  } catch (error) {
-    next(error);
-  }
-};
 
 exports.getFixtures = async (req, res, next) => {
   try {
@@ -54,120 +41,134 @@ exports.getFixtures = async (req, res, next) => {
             httpStatus.OK,
             'These are a list of all the fixtures',
             JSON.parse(fixtures)
-          )
-        );
-      } else {
-        const fixtures = await Fixture.find();
-        client.setex(fixtureReadisKey, 360, JSON.stringify(fixtures));
-        res.json(
-          sendResponse(httpStatus.OK, 'These are all fixtures', fixtures)
-        );
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getPendingFixtures = async (req, res, next) => {
-  try {
-    //check client for pending fixtures...
-    const pendingFixturesRedis = 'pendingRedisKey';
-
-    return client.get(pendingFixturesRedis, async (err, pendingFixtures) => {
-      if (pendingFixtures) {
-        return res.json(
-          sendResponse(httpStatus.OK, JSON.parse(pendingFixtures))
-        );
-      } else {
-        //pedning fixtures
-        const pendingFixtures = await Fixture.find({ status: 'Pending' });
-        client.setex(
-          pendingFixturesRedis,
-          360,
-          JSON.stringify(pendingFixtures)
-        );
-        res.json(sendResponse(httpStatus.OK, pendingFixtures));
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getCompletedFixtures = async (req, res, next) => {
-  try {
-    const completedFixturesKey = 'completedFixturesKey';
-    return client.get(completedFixturesKey, async (err, completedFixtures) => {
-      if (completedFixtures) {
-        return res.json(
-          sendResponse(httpStatus.OK, JSON.parse(completedFixtures))
-        );
-      } else {
-        const completedFixtures = await Fixture.find({ status: 'Completed' });
-        res.json(sendResponse(httpStatus.OK, completedFixtures));
-      }
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.search = async (req, res, next) => {
-  try {
-    const fixture = await Fixture.search(req.query.search);
-    if (!fixture) {
-      return res.json(sendResponse(httpStatus.OK, 'Fixture not found'));
-    }
-    res.json(sendResponse(httpStatus.OK, fixture));
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.updateFixture = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    let fixture = await Fixture.findById(id);
-
-    if (!fixture) {
-      return res.sendResponse(httpStatus[400], "Fixture doesn't exists");
-    }
-
-    fixture = await fixture.update(req.body);
-
-    fixture.save();
-
-    return res.json(
-      sendResponse(httpStatus.OK, 'Team details updated successfully', fixture)
-    );
-  } catch (error) {
-    next(error);
-  }
-};
-
-exports.getSingleFixture = async (req, res, next) => {
-  try {
-    const { id } = req.params;
-
-    
-    const singleFixRedisKey = 'keyForSingleFix'
-    return client.get(singleFixRedisKey, async(err,fixture)=> {
-      if(fixture){
-        return res.json(httpStatus.OK, fixture)
-      }else{
-        const fixture = await Fixture.get(id);
-        if (fixture) {
-          client.setex(singleFixRedisKey, 360, JSON.stringify(fixture))
-          res.json(sendResponse(httpStatus.OK, fixture));
+            )
+            );
+          } else {
+            const fixtures = await Fixture.find();
+            client.setex(fixtureReadisKey, 360, JSON.stringify(fixtures));
+            res.json(
+              sendResponse(httpStatus.OK, 'These are all fixtures', fixtures)
+              );
+            }
+          });
+        } catch (error) {
+          next(error);
         }
-      }
-    })
-    // if (!fixture) {
-    //   return res.json(sendResponse(httpStatus.BAD_REQUEST, 'Fixture not found'), fixture)
-    // }
-  } catch (error) {
-    next(error);
-  }
-};
+      };
+      
+      exports.getPendingFixtures = async (req, res, next) => {
+        try {
+          //check client for pending fixtures...
+          const pendingFixturesRedis = 'pendingRedisKey';
+          return client.get(pendingFixturesRedis, async (err, pendingFixtures) => {
+            if (pendingFixtures) {
+              return res.json(
+                sendResponse(httpStatus.OK, JSON.parse(pendingFixtures))
+                );
+              } else {
+                //pedning fixtures
+                const pendingFixtures = await Fixture.find({ status: 'Pending' });
+                client.setex(
+                  pendingFixturesRedis,
+                  360,
+                  JSON.stringify(pendingFixtures)
+                  );
+                  res.json(sendResponse(httpStatus.OK, pendingFixtures));
+                }
+              });
+            } catch (error) {
+              next(error);
+            }
+          };
+          
+          exports.getCompletedFixtures = async (req, res, next) => {
+            try {
+              const completedFixturesKey = 'completedFixturesKey';
+              return client.get(completedFixturesKey, async (err, completedFixtures) => {
+                if (completedFixtures) {
+                  return res.json(
+                    sendResponse(httpStatus.OK, JSON.parse(completedFixtures))
+                    );
+                  } else {
+                    const completedFixtures = await Fixture.find({ status: 'Completed' });
+                    res.json(sendResponse(httpStatus.OK, completedFixtures));
+                  }
+                });
+              } catch (error) {
+                next(error);
+              }
+            };
+            
+            exports.search = async (req, res, next) => {
+              try {
+                const fixture = await Fixture.search(req.query.search);
+                if (!fixture) {
+                  return res.json(sendResponse(httpStatus.OK, 'Fixture not found'));
+                }
+                res.json(sendResponse(httpStatus.OK, fixture));
+              } catch (error) {
+                next(error);
+              }
+            };
+            
+            exports.updateFixture = async (req, res, next) => {
+              try {
+                const { id } = req.params;
+                
+                let fixture = await Fixture.findById(id);
+                
+                if (!fixture) {
+                  return res.sendResponse(httpStatus[400], "Fixture doesn't exists");
+                }
+                
+                fixture = await fixture.update(req.body);
+                
+                fixture.save();
+                
+                return res.json(
+                  sendResponse(httpStatus.OK, 'Team details updated successfully', fixture)
+                  );
+                } catch (error) {
+                  next(error);
+                }
+              };
+              
+              exports.getSingleFixture = async (req, res, next) => {
+                try {
+                  const { id } = req.params;
+                  
+                  
+                  const singleFixRedisKey = 'keyForSingleFix'
+                  return client.get(singleFixRedisKey, async(err,fixture)=> {
+                    if(fixture){
+                      return res.json(httpStatus.OK, fixture)
+                    }else{
+                      const fixture = await Fixture.get(id);
+                      if (fixture) {
+                        client.setex(singleFixRedisKey, 360, JSON.stringify(fixture))
+                        res.json(sendResponse(httpStatus.OK, fixture));
+                      }
+                    }
+                  })
+                  // if (!fixture) {
+                    //   return res.json(sendResponse(httpStatus.BAD_REQUEST, 'Fixture not found'), fixture)
+                    // }
+                  } catch (error) {
+                    next(error);
+                  }
+                };
+                
+                exports.removeFixture = async (req, res, next) => {
+                  try {
+                    const { id } = req.params;
+                    console.log(id,'hello rukee')
+                
+                    const fixture = await Fixture.findByIdAndRemove(id);
+                
+                    return res.json(
+                      sendResponse(httpStatus.OK, 'Successfully deleted', fixture)
+                    );
+                  } catch (error) {
+                    next(error);
+                  }
+                };
