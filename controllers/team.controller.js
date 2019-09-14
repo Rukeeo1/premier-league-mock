@@ -50,16 +50,12 @@ exports.getTeam = async (req, res, next) => {
         );
       } else {
         const team = await TeamModel.findById(req.params.id);
+     
         client.setex(redisTeamKey, 360, JSON.stringify(team));
 
         return res.json(
           sendResponse(httpStatus.OK, 'Team request successful', team)
         );
-        // if (!team) {
-        //   return res.json(
-        //     sendResponse(httpStatus.BAD_REQUEST, 'The team not found')
-        //   );
-        // }
       }
     });
   } catch (error) {
