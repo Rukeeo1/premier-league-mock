@@ -72,7 +72,7 @@ beforeEach(async () => {
 afterAll(async () => {
   await User.deleteMany().exec();
   await TeamModel.deleteMany().exec();
-  mongoose.connection.close();
+  // mongoose.connection.close();
 });
 
 describe('#TEAM', () => {
@@ -139,6 +139,7 @@ describe('#TEAM', () => {
           email: 'admin@gmail.com',
           password: '123456'
         });
+        
 
       const { payload: token } = adminLogin.body;
 
@@ -240,8 +241,6 @@ describe('#TEAM', () => {
           const response = await request(app)
             .get(`/api/v1/teams/search?search=ar`)
             .expect(200);
-
-          console.log(response.body);
           const { statusCode, message, payload, error } = response.body;
           expect(statusCode).toBe(200);
           expect(message).toMatch('This is the Team');

@@ -47,7 +47,7 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await User.deleteMany();
-  mongoose.connection.close();
+  // mongoose.connection.close(); 
 });
 
 describe('#USER: test for user route', () => {

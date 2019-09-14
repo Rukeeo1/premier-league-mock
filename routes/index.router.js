@@ -4,6 +4,7 @@ const userRoutes = require('./user.route')
 const authRoutes = require('./auth.route')
 const adminRoutes = require('./admin.route')
 const teamRoutes = require('./team.route')
+const fixturesRoutes = require('./fixture.route')
 
 
 
@@ -26,5 +27,8 @@ router.use('/auth', authRoutes)
 
 //mount teams routes... /api/v1/teams
 router.use('/teams', teamRoutes)
+
+//mout fixture routes  /api/v1/fixtures
+router.use('/fixtures', fixturesRoutes)
 
 module.exports = router;

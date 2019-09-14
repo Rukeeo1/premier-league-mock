@@ -30,10 +30,10 @@ exports.createAdmin = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   try {
-    console.log(req.body, 'we');
+    
     const { email, password } = req.body;
     const admin = await User.findOne({ email });
-    console.log(admin, 'hello');
+
     if (!admin) {
       return res.json(
         sendResponse(httpStatus['400_MESSAGE'], 'Email or Password is Wrong')

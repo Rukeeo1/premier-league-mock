@@ -14,7 +14,7 @@ function verifyToken(req, res, next) {
 
     let verify = jwt.decode(token, process.env.JWT_SECRET);
     req.user = verify;
-    console.log(verify,'hello rukee')
+ 
     return next();
   } catch (error) {
     res.json(sendResponse('invalid token'));
