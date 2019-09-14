@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const app = require('../server');
 const User = require('../models/user.model');
 
+
 let userFour;
 
 beforeEach(async () => {
@@ -82,7 +83,7 @@ describe('#USER: test for user route', () => {
           .send({
             name: 'Rukee Ojigbo',
             email: 'rukeeojigbo@gmail.com',
-            password: '22222222',
+            password: '123456',
             favoriteTeam: 'Manchester United'
           })
           .expect(200);
@@ -92,6 +93,41 @@ describe('#USER: test for user route', () => {
         expect(errors).toBeDefined;
       });
 
+      describe('#LOGIN', () => {
+        it('a registered user should be able to login', async () => {
+          const response = await request(app)
+            .post('/api/v1/auth/login')
+            .send({
+              email: 'rukeeojigbo@gmail.com',
+              password: '123456',
+            })
+            .expect(200);
     
+          const { statusCode, message, payload } = response.body;
+          expect(statusCode).toBe("OK");
+          expect(message).toMatchObject({
+    
+            name: expect.any(String),
+            email: expect.any(String),
+            favoriteTeam: expect.any(String)
+          });
+          expect(payload).toBeDefined;
+        })
+    
+        it('should not allow non-registered users or users with wrong password', async () => {
+          const response = await request(app)
+            .post('/api/v1/auth/login')
+            .send({
+              email: 'rukeeojigbo@gmail.com',
+              password: '2222xxx',
+            })
+            .expect(200);
+    
+          const { statusCode, message, payload, errors } = response.body;
+          expect(statusCode).toBe(400);
+          expect(message).toBe('Email or Password is Wrong')
+    
+        })
+      })
   });
 });

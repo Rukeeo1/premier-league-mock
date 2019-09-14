@@ -3,6 +3,8 @@ const router = express.Router();
 const userRoutes = require('./user.route')
 const authRoutes = require('./auth.route')
 const adminRoutes = require('./admin.route')
+const teamRoutes = require('./team.route')
+
 
 
 
@@ -20,5 +22,9 @@ router.use('/admin', adminRoutes)
 
 //authentification route for login related issues.... /api/v1/auth/login
 router.use('/auth', authRoutes)
+
+
+//mount teams routes... /api/v1/teams
+router.use('/teams', teamRoutes)
 
 module.exports = router;
