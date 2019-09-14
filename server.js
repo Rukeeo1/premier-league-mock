@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const redis = require('redis');//required redis
+// const redis = require('redis');//required redis
 
 const dotenv = require('dotenv');
 dotenv.config();
