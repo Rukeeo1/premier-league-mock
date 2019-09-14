@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const app = require('../server');
+const {app }= require('../server');
 const User = require('../models/user.model');
 const TeamModel = require('../models/team.model');
 
@@ -235,7 +235,8 @@ describe('#TEAM', () => {
       expect(message).toMatch('Team sucessfully removed');
       expect(payload).toBeDefined();
       // expect(payload).toBeFalsy();
-    }),
+    })
+  });
       describe('#Search Team', () => {
         it('A user should be able to search for a team', async () => {
           const response = await request(app)
@@ -243,9 +244,8 @@ describe('#TEAM', () => {
             .expect(200);
           const { statusCode, message, payload, error } = response.body;
           expect(statusCode).toBe(200);
-          expect(message).toMatch('This is the Team');
+          expect(message).toMatch('Team search sucessful');
           expect(payload).toBeDefined();
         });
       });
-  });
 });
