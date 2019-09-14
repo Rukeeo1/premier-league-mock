@@ -1,5 +1,4 @@
 const httpStatus = require('http-status');
-const User = require('../models/user.model');
 const sendResponse = require('../helpers/response');
 const Fixture = require('../models/fixture.model');
 const client = require('../redis/redis');
@@ -137,11 +136,11 @@ exports.getFixtures = async (req, res, next) => {
                 try {
                   const { id } = req.params;
                   
-                  
+                  console.log('hello i was here')
                   const singleFixRedisKey = 'keyForSingleFix'
                   return client.get(singleFixRedisKey, async(err,fixture)=> {
                     if(fixture){
-                      return res.json(httpStatus.OK, fixture)
+                      return res.json(httpStatus.OK, JSON.parse(fixture))
                     }else{
                       const fixture = await Fixture.get(id);
                       if (fixture) {
