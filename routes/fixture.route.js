@@ -20,5 +20,5 @@ router.route('/completed').get(fixtureCtrl.getCompletedFixtures)
 
 router.route('/:id').get(fixtureCtrl.getSingleFixture)
 
-router.post('/seedFixtures',fixtureCtrl.seedFixtures)
+
 module.exports = router
