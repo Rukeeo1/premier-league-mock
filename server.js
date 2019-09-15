@@ -2,17 +2,20 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-// const redis = require('redis');//required redis
+const redis = require('redis');//required redis
+const client = redis.createClient();//create client
+const session = require('express-session');//session
+const redisStore = require('connect-redis')(session);//global redis store...
+
 
 const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-// const client = redis.createClient(6379,'localhost');//created redis client
-// // echo redis errors to the console
-// client.on('error', (err) => {//logged redis error to the console...
-//   console.log("Error " + err)
-// });
+
+client.on('error', (err) => {//logged redis error to the console...
+  console.log("Error " + err)
+});
 
 const morgan = require('morgan');
 const routes = require('./routes/index.router')
@@ -40,6 +43,15 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(morgan('combined'));
+
+app.use(session({
+  secret: 'ThisIsHowYouUseRedisSessionStorage',
+  name: 'sterling-premier-league',
+  resave: false,
+  saveUninitialized: true,
+  cookie: { secure: false }, // Note that the cookie-parser module is no longer needed
+  store: new redisStore({ host: 'localhost', port: 6379, client: client, ttl: 86400 })
+}))
 
 //index routes...
 app.use('/api/v1', routes);
@@ -73,8 +85,7 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-// exports.client = client;//export redis client...
-// module.exports = app
+
 module.exports = {
   app: app
   // client: client

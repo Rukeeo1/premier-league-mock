@@ -2,6 +2,7 @@ const TeamModel = require('../models/team.model');
 
 
 
+
 const teams = [
   {
     name: 'Arsenal',
@@ -181,26 +182,4 @@ const teams = [
   }
 ];
 
-// function seed(teams) {
-//   mongoose
-//     .connect(
-//       'mongodb+srv://Rukeeo1:rukee212@cluster0-gdvyd.mongodb.net/test?',
-//       { useNewUrlParser: true }
-//     )
-//     .then(res => {
-//       for (var i = 0; i < teams.length; i++) {
-//         let team = new Team(teams[i]);
-//         team.save();
-//       }
-//     }).catch(err=>{
-//       console.log(err)
-//     });
-
-//   // for(var i = 0; i < teams.length; i++){
-//   //   let team =  new Team (teams[i]);
-//   //   team.save();
-//   // }
-// }
-
-// seed(teams);
-console.log(teams)
+module.exports = teams

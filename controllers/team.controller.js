@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const TeamModel = require('../models/team.model');
 const client = require('../redis/redis');
+const teams = require('../seeder/team.seed')
 
 exports.viewAllTeams = async (req, res, next) => {
   try {
@@ -50,7 +51,7 @@ exports.getTeam = async (req, res, next) => {
         );
       } else {
         const team = await TeamModel.findById(req.params.id);
-     
+
         client.setex(redisTeamKey, 360, JSON.stringify(team));
 
         return res.json(
@@ -101,3 +102,23 @@ exports.removeTeam = async (req, res, next) => {
     next(error);
   }
 };
+
+/**
+ * this controller ... is responsible for seeding teams...
+ * 
+ exports.seedTeams =async (req,res,next) => {
+  try {
+   const checkTeams = await TeamModel.find();
+   console.log(checkTeams,'hello')
+   if(checkTeams.length){ return res.json(checkTeams)}
+     for(var i = 0; i < teams.length; i++){
+       let newTeam = new TeamModel(teams[i]);
+       await newTeam.save();
+     }
+   
+   res.json('seeding completed')
+  } catch (error) {
+    
+  }
+}
+ */

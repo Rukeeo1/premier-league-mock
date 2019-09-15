@@ -20,4 +20,5 @@ router.route('/completed').get(fixtureCtrl.getCompletedFixtures)
 
 router.route('/:id').get(fixtureCtrl.getSingleFixture)
 
+
 module.exports = router

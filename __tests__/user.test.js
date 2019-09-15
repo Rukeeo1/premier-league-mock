@@ -56,7 +56,6 @@ describe('#USER: test for user route', () => {
       await request(app)
         .get('/api/v1/health-check/')
         .then(res => {
-          console.log(res.body);
           expect(res.text).toMatch(/OK/);
           expect(res.status).toBe(200);
         });
@@ -102,6 +101,7 @@ describe('#USER: test for user route', () => {
               password: '123456',
             })
             .expect(200);
+          
     
           const { statusCode, message, payload } = response.body;
           expect(statusCode).toBe("OK");
