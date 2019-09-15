@@ -139,7 +139,7 @@ exports.getSingleFixture = async (req, res, next) => {
     const singleFixRedisKey = 'keyForSingleFix';
     return client.get(singleFixRedisKey, async (err, fixture) => {
       if (fixture) {
-        return res.json(httpStatus.OK, JSON.parse(fixture));
+        return res.json(sendResponse(httpStatus.OK, JSON.parse(fixture)));
       } else {
         const fixture = await Fixture.get(id);
 
