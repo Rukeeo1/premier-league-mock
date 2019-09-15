@@ -37,6 +37,10 @@ const FixtureSchema = new mongoose.Schema({
     required: true,
     index: true
   },
+  homeTeamName: {
+    type: String,
+    index: true
+  },
   awayTeamName: {
     type: String,
     index: true
@@ -74,10 +78,9 @@ FixtureSchema.methods = {
     await this.save();
     return this;
   }
-}
+};
 
 FixtureSchema.statics = {
- 
   async search(searchTerm) {
     try {
       let listOfQueries = sanitizeQuery(searchTerm);
@@ -110,16 +113,17 @@ FixtureSchema.statics = {
     try {
       return await this.findById(id)
         .populate({
-          path: "homeTeam",
-          select: "name address city"
-        }).populate({
-          path: "awayTeam",
-          select: "name address city"
-        }).exec()
+          path: 'homeTeam',
+          select: 'name address city'
+        })
+        .populate({
+          path: 'awayTeam',
+          select: 'name address city'
+        })
+        .exec();
     } catch (error) {
-      next(error)
+      next(error);
     }
-
   }
 };
 
