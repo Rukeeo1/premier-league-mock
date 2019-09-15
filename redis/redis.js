@@ -1,9 +1,8 @@
 const redis = require('redis'); //required redis
-
-const client = redis.createClient({
-  host: 'localhost',
-  port: 6379,
-}); //created redis client
+require("dotenv").config();
+const client = redis.createClient(
+ process.env.REDIS_URL
+); //created redis client
 // echo redis errors to the console
 client.on('error', err => {
   //logged redis error to the console...
