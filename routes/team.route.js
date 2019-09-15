@@ -15,6 +15,9 @@ router.get('/',teamCtrl.viewAllTeams);
 
 router.get('/:id', teamCtrl.getTeam);
 
+/** the route below handles seeding of the teams */
+// router.post('/seedteams' ,teamCtrl.seedTeams)
+
 
 
 module.exports = router
