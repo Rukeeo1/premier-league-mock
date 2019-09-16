@@ -111,8 +111,6 @@ beforeAll(async () => {
     });
   fixtureId = addFixture.body.payload._id;
   console.log(fixtureId, 'hello from fix ture');
-  // console.log(addFixture,'rukee')
-  // console.log(fixtureId,'this is fix')
 });
 
 describe('#FIXTURES routes', () => {
@@ -176,11 +174,10 @@ describe('#FIXTURES routes', () => {
       const getSingleFixture = await request(app)
         .get(`/api/v1/fixtures/${fixtureId}`)
         .set('Authorization', `Bearer ${userToken}`);
-  
-        
+
       const { message, statusCode, payload } = await getSingleFixture.body;
-      console.log(getSingleFixture.body,'hello')
-  
+      console.log(getSingleFixture.body, 'hello');
+
       expect(statusCode).toBe(200);
       expect(message).toMatchObject({
         date: expect.any(String),
@@ -195,7 +192,7 @@ describe('#FIXTURES routes', () => {
       });
     });
   });
-    
+
   // });
   describe('#Edit', () => {
     it('An admin should be able to edit fixture details', async () => {
@@ -288,5 +285,3 @@ describe('#FIXTURES routes', () => {
     });
   });
 });
-
-
