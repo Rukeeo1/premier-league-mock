@@ -40,6 +40,7 @@ let teamTwoId;
 let adminToken;
 let userToken;
 let fixtureId;
+let uniqueLink;
 
 afterAll(async () => {
   await User.deleteMany().exec();
@@ -110,7 +111,8 @@ beforeAll(async () => {
       awayTeamName: 'Arsenal Football Club'
     });
   fixtureId = addFixture.body.payload._id;
-  console.log(fixtureId, 'hello from fix ture');
+uniqueLink = addFixture.body.payload.uniqueLink
+console.log(uniqueLink,'hello rukee')
 });
 
 describe('#FIXTURES routes', () => {
@@ -170,13 +172,11 @@ describe('#FIXTURES routes', () => {
 
   describe('#Get A Single Fixture by ID', () => {
     it('should allow a user get a fixture by id', async () => {
-      console.log(fixtureId, 'this is fsix');
       const getSingleFixture = await request(app)
         .get(`/api/v1/fixtures/${fixtureId}`)
         .set('Authorization', `Bearer ${userToken}`);
 
       const { message, statusCode, payload } = await getSingleFixture.body;
-      console.log(getSingleFixture.body, 'hello');
 
       expect(statusCode).toBe(200);
       expect(message).toMatchObject({
@@ -192,6 +192,33 @@ describe('#FIXTURES routes', () => {
       });
     });
   });
+
+  //
+  describe('#Get A Single Fixture by uniqueLink', () => {
+    it('should allow a user get a fixture by id', async () => {
+      const getSingleFixture = await request(app)
+        .get(`/api/v1/${uniqueLink}`)
+        .set('Authorization', `Bearer ${userToken}`);
+
+      const { message, statusCode, payload } = await getSingleFixture.body;
+      console.log(getSingleFixture.body)
+
+      expect(statusCode).toBe(200);
+      expect(message[0]).toMatchObject({
+        date: expect.any(String),
+        time: expect.any(String),
+        homeTeam: expect.any(String),
+        awayTeam: expect.any(String),
+        "awayTeamName": expect.any(String),
+        status: expect.any(String),
+        goalsHomeTeam: expect.any(String),
+        goalsAwayTeam: expect.any(String),
+        _id: expect.any(String),
+        venue: expect.any(String)
+      });
+    });
+  });
+  //
 
   // });
   describe('#Edit', () => {
