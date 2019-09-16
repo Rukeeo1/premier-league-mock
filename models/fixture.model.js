@@ -67,6 +67,9 @@ const FixtureSchema = new mongoose.Schema({
         ? ' - '
         : `${this.goalsAwayTeam} - ${this.goalsHomeTeam}`;
     }
+  },
+  uniqueLink: {
+    type: String
   }
 });
 
