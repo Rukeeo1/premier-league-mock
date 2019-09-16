@@ -21,6 +21,7 @@ router.route('/completed').get(fixtureCtrl.getCompletedFixtures)
 router.route('/:id').get(fixtureCtrl.getSingleFixture)
 
 router.route('/unique/:id').get(fixtureCtrl.getFixtureByLink)
+router.route('/remove-fixture/:id').delete(fixtureCtrl.removeFixture)
 
 
 module.exports = router
