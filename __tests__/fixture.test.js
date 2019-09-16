@@ -170,28 +170,31 @@ describe('#FIXTURES routes', () => {
     });
   });
 
-  // describe('#Get A Single Fixture by ID', () => {
-  //   it('should allow a user get a fixture by id', async () => {
-  //     console.log(fixtureId, 'this is fsix');
-  //     const getSingleFixture = await request(app)
-  //       .get(`/api/v1/fixtures/${fixtureId}`)
-  //       .set('Authorization', `Bearer ${userToken}`);
-
-  //     const { message, statusCode, payload } = await getSingleFixture.body;
-  //     // expect(statusCode).toBe(200);
-  //     expect(message).toMatchObject({
-  //       date: expect.any(String),
-  //       time: expect.any(String),
-  //       homeTeam: expect.any(Object),
-  //       awayTeam: expect.any(Object),
-  //       status: expect.any(String),
-  //       goalsHomeTeam: expect.any(String),
-  //       goalsAwayTeam: expect.any(String),
-  //       _id: expect.any(String),
-  //       venue: expect.any(String)
-  //     });
-  //   });
-
+  describe('#Get A Single Fixture by ID', () => {
+    it('should allow a user get a fixture by id', async () => {
+      console.log(fixtureId, 'this is fsix');
+      const getSingleFixture = await request(app)
+        .get(`/api/v1/fixtures/${fixtureId}`)
+        .set('Authorization', `Bearer ${userToken}`);
+  
+        
+      const { message, statusCode, payload } = await getSingleFixture.body;
+      console.log(getSingleFixture.body,'hello')
+  
+      expect(statusCode).toBe(200);
+      expect(message).toMatchObject({
+        date: expect.any(String),
+        time: expect.any(String),
+        homeTeam: expect.any(Object),
+        awayTeam: expect.any(Object),
+        status: expect.any(String),
+        goalsHomeTeam: expect.any(String),
+        goalsAwayTeam: expect.any(String),
+        _id: expect.any(String),
+        venue: expect.any(String)
+      });
+    });
+  });
     
   // });
   describe('#Edit', () => {
@@ -286,26 +289,4 @@ describe('#FIXTURES routes', () => {
   });
 });
 
-describe('#Get A Single Fixture by ID', () => {
-  it('should allow a user get a fixture by id', async () => {
-    console.log(fixtureId, 'this is fsix');
-    const getSingleFixture = await request(app)
-      .get(`/api/v1/fixtures/${fixtureId}`)
-      .set('Authorization', `Bearer ${userToken}`);
 
-    const { message, statusCode, payload } = await getSingleFixture.body;
-
-    expect(statusCode).toBe(200);
-    expect(message).toMatchObject({
-      date: expect.any(String),
-      time: expect.any(String),
-      homeTeam: expect.any(Object),
-      awayTeam: expect.any(Object),
-      status: expect.any(String),
-      goalsHomeTeam: expect.any(String),
-      goalsAwayTeam: expect.any(String),
-      _id: expect.any(String),
-      venue: expect.any(String)
-    });
-  });
-});
