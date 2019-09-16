@@ -67,15 +67,6 @@ exports.getTeam = async (req, res, next) => {
 exports.search = async (req, res, next) => {
   try {
     const searchedTeamKeyRedis = 'searchedTeam';
-
-    return client.get(searchedTeamKeyRedis, async (err, team) => {
-      //if team exists on the client...return
-      if (team) {
-        return res.json(
-          sendResponse(httpStatus.OK, 'Team search sucessful', JSON.parse(team))
-        );
-      } else {
-        //search team...
         const team = await TeamModel.search(req.query.search);
         //if team doesn't exist...  return not found
         if (!team) {
@@ -83,11 +74,8 @@ exports.search = async (req, res, next) => {
             sendResponse(httpStatus.BAD_REQUEST, 'Team not found')
           );
         }
-        //set key
-        client.setex(searchedTeamKeyRedis, 360, JSON.stringify(team));
         res.json(sendResponse(httpStatus.OK, 'Team search sucessful', team));
-      }
-    });
+   
   } catch (error) {
     next(error);
   }
