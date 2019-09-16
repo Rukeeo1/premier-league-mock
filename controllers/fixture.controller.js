@@ -2,7 +2,7 @@ const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Fixture = require('../models/fixture.model');
 const client = require('../redis/redis');
-const generateLink = require('../helpers/generateLink')
+const generateLink = require('../helpers/generateLink');
 
 exports.addFixture = async (req, res, next) => {
   try {
@@ -16,8 +16,6 @@ exports.addFixture = async (req, res, next) => {
         sendResponse(httpStatus.BAD_REQUEST, 'this fixture already exists')
       );
     }
-
-
 
     const fixture = new Fixture(req.body);
     fixture.uniqueLink = generateLink();
@@ -138,7 +136,6 @@ exports.getSingleFixture = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-
     const singleFixRedisKey = 'keyForSingleFix';
     return client.get(singleFixRedisKey, async (err, fixture) => {
       if (fixture) {
@@ -162,13 +159,36 @@ exports.getSingleFixture = async (req, res, next) => {
 exports.removeFixture = async (req, res, next) => {
   try {
     const { id } = req.params;
-    console.log(id, 'hello rukee');
-
     const fixture = await Fixture.findByIdAndRemove(id);
 
     return res.json(
       sendResponse(httpStatus.OK, 'Successfully deleted', fixture)
     );
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getFixtureByLink = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const fixtureByLink = 'fixtureByLink';
+    return client.get(fixtureByLink, async (err, fixture) => {
+      if (fixture) {
+        return res.json(sendResponse(httpStatus.OK, JSON.parse(fixture)));
+      } else {
+        const fixtureFor = await Fixture.find({
+          uniqueLink: `fixtures/unique/${id}`
+        });
+
+        if (fixtureFor) {
+          client.setex(fixtureByLink, 360, JSON.stringify(fixtureFor));
+          return res.json(sendResponse(httpStatus.OK, fixtureFor));
+        } else {
+          res.json(sendResponse(httpStatus.BAD_REQUEST, 'Fixture Not Found'));
+        }
+      }
+    });
   } catch (error) {
     next(error);
   }
