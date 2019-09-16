@@ -200,8 +200,8 @@ describe('#FIXTURES routes', () => {
         .get(`/api/v1/${uniqueLink}`)
         .set('Authorization', `Bearer ${userToken}`);
 
-      const { message, statusCode, payload } = await getSingleFixture.body;
-      console.log(getSingleFixture.body)
+      const { message, statusCode} = await getSingleFixture.body;
+  
 
       expect(statusCode).toBe(200);
       expect(message[0]).toMatchObject({
@@ -218,9 +218,9 @@ describe('#FIXTURES routes', () => {
       });
     });
   });
-  //
 
-  // });
+
+
   describe('#Edit', () => {
     it('An admin should be able to edit fixture details', async () => {
       const editedFixture = await request(app)
