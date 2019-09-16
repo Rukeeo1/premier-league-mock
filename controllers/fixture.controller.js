@@ -2,6 +2,7 @@ const httpStatus = require('http-status');
 const sendResponse = require('../helpers/response');
 const Fixture = require('../models/fixture.model');
 const client = require('../redis/redis');
+const generateLink = require('../helpers/generateLink')
 
 exports.addFixture = async (req, res, next) => {
   try {
@@ -16,8 +17,10 @@ exports.addFixture = async (req, res, next) => {
       );
     }
 
-    const fixture = new Fixture(req.body);
 
+
+    const fixture = new Fixture(req.body);
+    fixture.uniqueLink = generateLink();
     await fixture.save();
 
     return res.json(
