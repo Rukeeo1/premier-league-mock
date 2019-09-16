@@ -159,6 +159,8 @@ exports.getSingleFixture = async (req, res, next) => {
 exports.removeFixture = async (req, res, next) => {
   try {
     const { id } = req.params;
+    console.log(req.body)
+    console.log('helo')
     const fixture = await Fixture.findByIdAndRemove(id);
 
     return res.json(
