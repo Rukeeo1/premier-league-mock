@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const redis = require('redis');//required redis
-const client = redis.createClient();//create client
+
 const session = require('express-session');//session
 const redisStore = require('connect-redis')(session);//global redis store...
 
@@ -12,7 +12,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const app = express();
-
+const client = redis.createClient(process.env.REDIS_URL);//create clien
 client.on('error', (err) => {//logged redis error to the console...
   console.log("Error " + err)
 });
